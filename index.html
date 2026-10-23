@@ -116,7 +116,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792731877";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792731964";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -174,7 +174,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 const $=id=>document.getElementById(id);
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 /* ---------- piece art (SVG) ---------- */
-const COL={1:['#e8352e','#ff8a73','#a8170f'],2:['#efe6cf','#fffdf4','#b9a98a'],3:['#3e8fe6','#9fd3ff','#1c58ad'],4:['#f6a51e','#ffe08a','#c06a00'],5:['#e264c4','#ffc0ee','#a32c8a'],6:['#6cc644','#d2f5a6','#3a8a24'],7:['#3fc9b0','#b4f5e6','#178a74'],9:['#5f6570','#b4bac4','#33373e']};
+const COL={1:['#e8352e','#ff8a73','#a8170f'],2:['#efe6cf','#fffdf4','#b9a98a'],3:['#3e8fe6','#9fd3ff','#1c58ad'],4:['#f6a51e','#ffe08a','#c06a00'],5:['#e264c4','#ffc0ee','#a32c8a'],6:['#6cc644','#d2f5a6','#3a8a24'],7:['#3fc9b0','#b4f5e6','#178a74'],9:['#8a5cf0','#d4c2ff','#5328b8']};
 const star=(cx,cy,R,r)=>'M'+[...Array(10)].map((_,k)=>{const a=-Math.PI/2+k*Math.PI/5,q=k%2?r:R;return (cx+q*Math.cos(a)).toFixed(2)+' '+(cy+q*Math.sin(a)).toFixed(2)}).join(' L')+'Z';
 const hexa=(cx,cy,R)=>'M'+[...Array(6)].map((_,k)=>{const a=Math.PI/6+k*Math.PI/3;return (cx+R*Math.cos(a)).toFixed(2)+' '+(cy+R*Math.sin(a)).toFixed(2)}).join(' L')+'Z';
 const SH={1:'<path d="M20 35.5C7.5 29 3.2 22.5 3.2 15.2C3.2 8.6 7.6 4.2 13 4.2C16.3 4.2 18.7 6 20 8.6C21.3 6 23.7 4.2 27 4.2C32.4 4.2 36.8 8.6 36.8 15.2C36.8 22.5 32.5 29 20 35.5Z"/>',
@@ -218,7 +218,7 @@ const PIX={
  note:['....11..','....111.','....1.11','....1...','....1...','.1111...','11111...','.111....'],
  restart:['..11111.','.1....11','1....111','1.......','1.......','1......1','.1....1.','..1111..']};
 document.querySelectorAll('[data-ic]').forEach(el=>{const m=PIX[el.dataset.ic];let r='';m.forEach((row,y)=>[...row].forEach((v,x)=>{if(v==='1')r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02"/>`}));el.innerHTML=`<svg viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor">${r}</svg>`});
-const N=7;let MODE="normal",MUL=1,PAL=[1,2,3,4,5,6,7]; /* 모드: EASY 6종·×0.5 / NORMAL 7종(민트)·×1 / HARD 8종(회색 다이아)·×2 — 8번은 무지개 아이템이라 새 팡팡이는 9번 */
+const N=7;let MODE="normal",MUL=1,PAL=[1,2,3,4,5,6,7]; /* 모드: EASY 6종·×0.5 / NORMAL 7종(민트)·×1 / HARD 8종(보라 다이아)·×2 — 8번은 무지개 아이템이라 새 팡팡이는 9번 */
 const cv=$("cv"),cx=cv.getContext("2d"),well=$("well");
 let CS=48,DPR=1,T=null,state=null,lastT=0,NOW=0,score=0,combo=0,maxCombo=0,pops=0,timeLeft=60,stage=1,phase="idle",phT=0,sel=null,swapA=null,swapB=null,swapBack=false,clearSet=null,idleT=0,hint=null,ending=false,bonusT=0;
 let beams=[],parts=[],rings=[],floats=[],shake=0,shakeA=0,flashA=0;
