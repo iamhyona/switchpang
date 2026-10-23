@@ -53,7 +53,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #nx{display:block}
 .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;background:rgba(10,11,14,.9);z-index:5;overflow:auto}
 .ov[hidden]{display:none}
-.ob.md{height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.ob.md small{font-family:var(--f);font-size:11px;letter-spacing:0;opacity:.75}.ob.md.easy{border-color:#00a8e0;color:#7fd9ff}.ob.md.hard{border-color:#e8284f;color:#ff8aa0}.ob.md.back{height:44px;border-color:#3a3b46;box-shadow:none;color:var(--sub);font-size:13px}
+.ob.md{height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.ob.md small{font-family:var(--f);font-size:11px;letter-spacing:0;opacity:.75}.ob.md.easy{border-color:#00a8e0;color:#7fd9ff}.ob.md.hard{border-color:#e8284f;color:#ff8aa0}.ob.md.back{height:44px;border-color:#3a3b46;box-shadow:none;color:var(--sub);font-size:13px}
 .logo{filter:drop-shadow(0 0 5px rgba(255,255,255,.12));max-width:100%}
 .sub{color:var(--hi);font-size:15px;letter-spacing:.35em;margin-top:-4px}
 .show{display:flex;gap:2px;margin:-8px 0 10px}
@@ -118,7 +118,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792740747";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792741112";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -130,7 +130,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 .st b{font-size:18px!important}
 .go{font-size:40px!important}
 </style>
-<link rel="stylesheet" href="../games/ph.css?v=3"><style>#startOv{padding:0!important}#startOv::before,#startOv::after{display:none!important}.lcd-label{padding-left:2px;padding-right:2px}</style></head>
+<link rel="stylesheet" href="../games/ph.css?v=4"><style>#startOv{padding:0!important}#startOv::before,#startOv::after{display:none!important}.lcd-label{padding-left:2px;padding-right:2px}</style></head>
 <body>
 <div class="ph">
   <div class="lcd-label"><i class="ln"></i><span class="copy">© 2026 PARK HYONA</span><i class="ln"></i></div>
@@ -149,7 +149,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
     </div>
 
     <div class="ov" id="startOv"><div class="phS"><i class="phS-sp a"></i><div class="phS-logo" data-word="SWITCH|PANG" id="logo"></div><div class="phS-show" id=show></div><i class="phS-sp b"></i><div class="phS-btns"><button class="phS-b" id="startB">SINGLE PLAY</button><button class="phS-b gold" id="rankB">RANKING</button></div><i class="phS-sp c"></i><div class="phS-credit">이 게임은 서울 마포구에 사는 박현아가 만든<br>비상업용 게임이에요. 지치고 힘들 때<br>잠시 머리 식히며 마음껏 즐겨 주세요.</div></div></div>
-    <div class="ov" id="modeOv" hidden><div class="paused">MODE</div><div class="gmT" id="gmT"><button class="gmb" data-g="time">TIME ATTACK<small>60초 · 팡 하면 충전</small></button><button class="gmb" data-g="stage">STAGE<small>20번 안에 목표 점수</small></button></div><button class="ob md easy" data-m="easy">EASY<small>팡팡이 6종류 · 점수 ×0.5</small></button><button class="ob md" data-m="normal">NORMAL<small>팡팡이 7종류 · 점수 ×1</small></button><button class="ob md hard" data-m="hard">HARD<small>팡팡이 8종류 · 점수 ×2</small></button><button class="ob md back" id="modeBack">BACK</button></div>
+    <div class="ov" id="modeOv" hidden><div class="paused">MODE</div><div class="gmT" id="gmT"><button class="gmb" data-g="time">TIME ATTACK<small>60초 · 팡 하면 충전</small></button><button class="gmb" data-g="stage">STAGE<small>20번 안에 목표 점수</small></button></div><button class="ob md easy" data-m="easy">EASY<small>팡팡이 6종류 · 점수 ×0.5</small></button><button class="ob md" data-m="normal">NORMAL<small>팡팡이 7종류 · 점수 ×1</small></button><button class="ob md hard" data-m="hard">HARD<small>팡팡이 8종류 · 점수 ×2</small></button><button class="ob md master" data-m="master">MASTER<small>팡팡이 8종류 · 더 빠르게 · 점수 ×3</small></button><button class="ob md back" id="modeBack">BACK</button></div>
     <div class="ov" id="pauseOv" hidden><div class="paused">PAUSE</div><button class="ob" id="resumeB">CONTINUE</button><button class="ob red" id="quitB">GIVE UP</button></div>
     <div class="ov" id="overOv" hidden>
       <div class="go">GAME<br>OVER</div>
@@ -215,7 +215,7 @@ let CS=48,DPR=1,T=null,state=null,lastT=0,NOW=0,score=0,combo=0,maxCombo=0,pops=
 let beams=[],parts=[],rings=[],floats=[],shake=0,shakeA=0,flashA=0;
 const rc=()=>PAL[Math.random()*PAL.length|0];
 /* 게임 방식: time = 타임어택(60초, 팡 하면 충전) · stage = 스테이지(20번 안에 목표 점수) */
-const MOVES=20;let GM=store.get("swp-gm")==="stage"?"stage":"time",moves=MOVES,stS=0,stClr=false,RKGM="time";
+let MOVES=20; /* 마스터는 15번 */let GM=store.get("swp-gm")==="stage"?"stage":"time",moves=MOVES,stS=0,stClr=false,RKGM="time";
 const tgt=()=>Math.round((500+250*(stage-1))*MUL/10)*10;
 function layout(){DPR=Math.min(window.devicePixelRatio||1,3);cv.style.width=cv.style.height="0px";
   const f=document.querySelector(".bw").getBoundingClientRect();CS=Math.max(24,Math.floor(Math.min((f.width-10)/N,(f.height-10)/N)));
@@ -311,7 +311,7 @@ function after(){const P=plan(null);if(P){P.fx=[];expand(P.set,P.fx);startClear(
 const speed=0;const ease=(v,t,dt,ms)=>v+(t-v)*(1-Math.exp(-dt/ms));
 function tick(t){requestAnimationFrame(tick);const dt=Math.min(50,t-(lastT||t));lastT=t;NOW=t;const s=dt/1000;
   if(state==="play"&&T){
-    if(!ending&&GM!=="stage"){timeLeft-=s*(1+(stage-1)*.12);if(timeLeft<=0){timeLeft=0;ending=true}}
+    if(!ending&&GM!=="stage"){timeLeft-=s*(1+(stage-1)*.12)*(MODE==="master"?1.4:1);if(timeLeft<=0){timeLeft=0;ending=true}}
     if(bonusT>0)bonusT=Math.max(0,bonusT-s*1.5);
     tbar();
     phT+=dt;
@@ -446,7 +446,7 @@ const RK="swp-rank";let mine=null;
 const rkLoad=()=>{try{return JSON.parse(store.get(RK)||"[]")}catch(e){return[]}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const RANK_URL="https://script.google.com/macros/s/AKfycbzkdjVleobj98oyxlC77cUf5txCRiSB6D1zgRWU56pX22ElXAx9R8xFRGnV0nKAUbwC/exec";let rkCache=null,myRec=null;
-function rkDraw(el,l){l=l.slice(0,20);let hit=false;el.innerHTML=l.length?l.map((r,i)=>{const me=!hit&&myRec&&r.n===myRec.n&&r.s===myRec.s;if(me)hit=true;return `<li class="${me?"me":""}"><em>${i+1}</em>${esc(r.n)}<small>${({easy:"EASY · ",normal:"NORMAL · ",hard:"HARD · ","이지":"EASY · ","노멀":"NORMAL · ","하드":"HARD · "}[String(r.m||"").replace("스테이지 ","")]||"")}STAGE ${r.g||r.v||1}</small><b>${Number(r.s).toLocaleString()}</b></li>`}).join(""):`<li class="empty">아직 기록이 없어요</li>`}
+function rkDraw(el,l){l=l.slice(0,20);let hit=false;el.innerHTML=l.length?l.map((r,i)=>{const me=!hit&&myRec&&r.n===myRec.n&&r.s===myRec.s;if(me)hit=true;return `<li class="${me?"me":""}"><em>${i+1}</em>${esc(r.n)}<small>${({easy:"EASY · ",normal:"NORMAL · ",hard:"HARD · ",master:"MASTER · ","이지":"EASY · ","노멀":"NORMAL · ","하드":"HARD · ","마스터":"MASTER · "}[String(r.m||"").replace("스테이지 ","")]||"")}STAGE ${r.g||r.v||1}</small><b>${Number(r.s).toLocaleString()}</b></li>`}).join(""):`<li class="empty">아직 기록이 없어요</li>`}
 /* 서버 랭킹 + 이 폰 기록을 합쳐서 보여줌 (서버 응답이 늦거나 실패해도 마지막으로 받은 서버 랭킹 유지) */
 function rkMerge(srv){const m=new Map();[...(srv||[]),...rkLoad().filter(r=>(r.gm||"time")===RKGM)].forEach(r=>{const k=r.n+"|"+r.s+"|"+(r.g||r.v||1);if(!m.has(k))m.set(k,r)});return [...m.values()].sort((a,b)=>b.s-a.s)}
 function rkSaved(){try{return JSON.parse(store.get("swp-srv"+(RKGM==="stage"?"-st":""))||"null")}catch(e){return null}}
@@ -467,7 +467,7 @@ function goUpd(){if(!needUpd)return false;location.replace(location.pathname+"?v
 addEventListener("visibilitychange",()=>{if(!document.hidden&&state!=="play"){rkSync();chkUpd()}});
 $("nmF").addEventListener("submit",e=>{e.preventDefault();if(mine||score<=0)return;const n=($("nmI").value.trim()||"익명").slice(0,8);store.set("pang-name",n);
   const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,m:MODE,gm:GM,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved","done");$("nmF").querySelector("button").textContent="등록 완료 ✓";toast("랭킹에 등록되었어요!");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
-$("startB").onclick=()=>{unlockAudio();$("modeOv").hidden=false};document.querySelectorAll(".ob.md[data-m]").forEach(b=>b.onclick=()=>{MODE=b.dataset.m;PAL={easy:[1,2,3,4,5,6],normal:[1,2,3,4,5,6,7],hard:[1,2,3,4,5,6,7,9]}[MODE];MUL={easy:.5,normal:1,hard:2}[MODE];phTut("swp-tut",{"goal": "같은 모양 3개 이상을 한 줄로 맞추면 팡!<br>TIME ATTACK은 팡 하면 시간 충전, STAGE는 20번 안에 목표 점수.", "touch": [["밀기 ↔ ↕", "옆 조각과 바꾸기"], ["탭 + 탭", "두 조각 바꾸기"], ["4개", "줄폭탄"], ["ㄱ자", "폭탄"], ["5개", "무지개"], ["시계", "+5초 (STAGE: +3번)"]]},start)});$("modeBack").onclick=()=>{$("modeOv").hidden=true};const gmSet=g=>{GM=g;store.set("swp-gm",g);document.querySelectorAll("#gmT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g))};document.querySelectorAll("#gmT .gmb").forEach(b=>b.onclick=()=>gmSet(b.dataset.g));gmSet(GM);$("againB").onclick=start;$("homeB").onclick=home;
+$("startB").onclick=()=>{unlockAudio();$("modeOv").hidden=false};document.querySelectorAll(".ob.md[data-m]").forEach(b=>b.onclick=()=>{MODE=b.dataset.m;PAL={easy:[1,2,3,4,5,6],normal:[1,2,3,4,5,6,7],hard:[1,2,3,4,5,6,7,9],master:[1,2,3,4,5,6,7,9]}[MODE];MUL={easy:.5,normal:1,hard:2,master:3}[MODE];MOVES=MODE==="master"?15:20;phTut("swp-tut",{"goal": "같은 모양 3개 이상을 한 줄로 맞추면 팡!<br>TIME ATTACK은 팡 하면 시간 충전, STAGE는 20번 안에 목표 점수.", "touch": [["밀기 ↔ ↕", "옆 조각과 바꾸기"], ["탭 + 탭", "두 조각 바꾸기"], ["4개", "줄폭탄"], ["ㄱ자", "폭탄"], ["5개", "무지개"], ["시계", "+5초 (STAGE: +3번)"]]},start)});$("modeBack").onclick=()=>{$("modeOv").hidden=true};const gmSet=g=>{GM=g;store.set("swp-gm",g);document.querySelectorAll("#gmT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g))};document.querySelectorAll("#gmT .gmb").forEach(b=>b.onclick=()=>gmSet(b.dataset.g));gmSet(GM);$("againB").onclick=start;$("homeB").onclick=home;
 const rkTab=g=>{RKGM=g;rkCache=null;document.querySelectorAll("#rkT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g));rk($("rkL2"))};document.querySelectorAll("#rkT .gmb").forEach(b=>b.onclick=()=>rkTab(b.dataset.g));
 $("rankB").onclick=()=>{rkTab(GM);$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
 $("bgmB").onclick=()=>{bgmOn=!bgmOn;store.set("swp-bgm",bgmOn?"1":"0");bgmBtn();if(bgmOn&&state==="play")bgmPlay();else bgmStop()};bgmBtn();
@@ -480,5 +480,5 @@ addEventListener("resize",layout);
 fill();hud();layout();requestAnimationFrame(tick);setTimeout(layout,300);
 </script>
 
-<script src="../games/ph.js?v=3"></script></body>
+<script src="../games/ph.js?v=4"></script></body>
 </html>
