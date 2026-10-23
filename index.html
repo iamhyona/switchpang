@@ -80,6 +80,8 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 .nm input{width:150px;height:42px;border:2px solid #4a4b58;border-radius:8px;color:var(--txt);background:#101116;font-family:var(--f);font-size:16px;padding:0 12px;outline:none;user-select:text;-webkit-user-select:text}
 .nm button{height:42px;padding:0 14px;border:0;border-radius:8px;background:linear-gradient(180deg,#f0405f,#c41d3f);color:#fff;font-family:var(--btn);font-size:14px;cursor:pointer}
 .nm.saved{opacity:.45;pointer-events:none}
+.nm.done{opacity:1}.nm.done input{opacity:.5}.nm.done button{background:linear-gradient(180deg,#2fc46a,#1a9a4e)}
+.toast{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(.9);background:rgba(20,21,27,.96);border:2px solid #2fc46a;color:#fff;padding:14px 22px;border-radius:12px;font-size:15px;z-index:99;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;white-space:nowrap}.toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .rk{width:100%;max-width:310px;border:2px solid var(--line2);border-radius:10px;overflow:hidden;flex-shrink:0}
 .rk h4{margin:0;padding:8px 12px;background:#1d1e25;color:var(--gold);font-weight:400;font-size:12px;letter-spacing:.12em}
 .rk ol{list-style:none;margin:0;padding:0;max-height:180px;overflow:auto}
@@ -113,7 +115,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792727616";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792727908";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -435,8 +437,9 @@ function start(){if(goUpd())return;["startOv","overOv","pauseOv","rankOv"].forEa
 function pause(on){if(!T||state==="over")return;state=on?"pause":"play";$("pauseOv").hidden=!on;lastT=0;on?bgmStop():bgmPlay();tbar()}
 function gameOver(){if(state==="over")return;state="over";chkUpd();rkSync();bgmStop();tbar();phase="over";const best=+(store.get("swp-best")||0);if(score>best)store.set("swp-best",score);
   $("oS").textContent=score.toLocaleString();$("oC").textContent=maxCombo;$("oL").textContent=stage;
-  $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);mine=null;myRec=null;rk($("rkL"));showChain("TIME UP","");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
+  $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);$("nmF").classList.remove("done");$("nmF").querySelector("button").textContent="랭킹 등록";mine=null;myRec=null;rk($("rkL"));showChain("TIME UP","");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
 function home(){if(goUpd())return;state=null;bgmStop();fill();stage=1;beams=[];parts=[];rings=[];floats=[];["overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);$("startOv").hidden=false;score=0;maxCombo=0;timeLeft=60;hud();draw()}
+function toast(m){let e=document.getElementById("toast");if(!e){e=document.createElement("div");e.id="toast";e.className="toast";document.body.appendChild(e)}e.textContent=m;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1800)}
 const RK="swp-rank";let mine=null;
 const rkLoad=()=>{try{return JSON.parse(store.get(RK)||"[]")}catch(e){return[]}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -461,7 +464,7 @@ function chkUpd(){fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).t
 function goUpd(){if(!needUpd)return false;location.replace(location.pathname+"?v="+needUpd);return true}
 addEventListener("visibilitychange",()=>{if(!document.hidden&&state!=="play"){rkSync();chkUpd()}});
 $("nmF").addEventListener("submit",e=>{e.preventDefault();if(mine||score<=0)return;const n=($("nmI").value.trim()||"익명").slice(0,8);store.set("pang-name",n);
-  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
+  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved","done");$("nmF").querySelector("button").textContent="등록 완료 ✓";toast("랭킹에 등록되었어요!");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
 $("startB").onclick=start;$("againB").onclick=start;$("homeB").onclick=home;
 $("rankB").onclick=()=>{rk($("rkL2"));$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
 $("bgmB").onclick=()=>{bgmOn=!bgmOn;store.set("swp-bgm",bgmOn?"1":"0");bgmBtn();if(bgmOn&&state==="play")bgmPlay();else bgmStop()};bgmBtn();
