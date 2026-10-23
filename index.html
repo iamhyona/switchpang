@@ -53,6 +53,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #nx{display:block}
 .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;background:rgba(10,11,14,.9);z-index:5;overflow:auto}
 .ov[hidden]{display:none}
+.ob.md{height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.ob.md small{font-family:var(--f);font-size:11px;letter-spacing:0;opacity:.75}.ob.md.easy{border-color:#00a8e0;color:#7fd9ff}.ob.md.hard{border-color:#e8284f;color:#ff8aa0}.ob.md.back{height:44px;border-color:#3a3b46;box-shadow:none;color:var(--sub);font-size:13px}
 .logo{filter:drop-shadow(0 0 5px rgba(255,255,255,.12));max-width:100%}
 .sub{color:var(--hi);font-size:15px;letter-spacing:.35em;margin-top:-4px}
 .show{display:flex;gap:2px;margin:-8px 0 10px}
@@ -115,7 +116,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792728622";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792731130";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -157,6 +158,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
       <i class="sp" style="flex:44 1 0"></i>
       <div class="credit">이 게임은 서울 마포구에 사는 박현아가 만든<br>비상업용 게임이에요. 같은 모양 셋이면 팡!</div>
     </div>
+    <div class="ov" id="modeOv" hidden><div class="paused">MODE</div><button class="ob md easy" data-m="easy">EASY<small>팡팡이 5종류 · 점수 ×0.5</small></button><button class="ob md" data-m="normal">NORMAL<small>팡팡이 6종류 · 점수 ×1</small></button><button class="ob md hard" data-m="hard">HARD<small>팡팡이 7종류 · 점수 ×2</small></button><button class="ob md back" id="modeBack">BACK</button></div>
     <div class="ov" id="pauseOv" hidden><div class="paused">PAUSE</div><button class="ob" id="resumeB">CONTINUE</button><button class="ob red" id="quitB">GIVE UP</button></div>
     <div class="ov" id="overOv" hidden>
       <div class="go">GAME<br>OVER</div>
@@ -216,7 +218,7 @@ const PIX={
  note:['....11..','....111.','....1.11','....1...','....1...','.1111...','11111...','.111....'],
  restart:['..11111.','.1....11','1....111','1.......','1.......','1......1','.1....1.','..1111..']};
 document.querySelectorAll('[data-ic]').forEach(el=>{const m=PIX[el.dataset.ic];let r='';m.forEach((row,y)=>[...row].forEach((v,x)=>{if(v==='1')r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02"/>`}));el.innerHTML=`<svg viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor">${r}</svg>`});
-const N=7,NC=6;
+const N=7;let NC=6,MODE="normal",MUL=1; /* 모드: EASY 5종·×0.5 / NORMAL 6종·×1 / HARD 7종·×2 */
 const cv=$("cv"),cx=cv.getContext("2d"),well=$("well");
 let CS=48,DPR=1,T=null,state=null,lastT=0,NOW=0,score=0,combo=0,maxCombo=0,pops=0,timeLeft=60,stage=1,phase="idle",phT=0,sel=null,swapA=null,swapB=null,swapBack=false,clearSet=null,idleT=0,hint=null,ending=false,bonusT=0;
 let beams=[],parts=[],rings=[],floats=[],shake=0,shakeA=0,flashA=0;
@@ -273,7 +275,7 @@ function startClear(P){const m=P.set;
   for(const q of P.sp){const k=q.x+","+q.y,t=T[q.y][q.x];if(!t)continue;m.delete(k);t.sp=q.sp;if(q.sp==="r")t.c=8;t.ck=false;t.lt=NOW+200;t.fired=0}
   clearSet=m;clearSet.fx=P.fx||[];clearSet.sp=P.sp;phase="clear";phT=0;combo++;if(combo>maxCombo)maxCombo=combo;
   const cells=[...m].map(k=>k.split(",").map(Number));const n=cells.length;let clocks=0;for(const [x,y] of cells)if(T[y][x]&&T[y][x].ck)clocks++;
-  const mult=combo*(n>=5?2:n>=4?1.5:1);const gain=Math.round(10*n*mult);score+=gain;pops+=n;
+  const mult=combo*(n>=5?2:n>=4?1.5:1);const gain=Math.round(10*n*mult*MUL);score+=gain;pops+=n;
   let add=n*.15+(combo-1)*.4+clocks*5;timeLeft=Math.min(60,timeLeft+add);
   const big=P.fx&&P.fx.length?P.fx[P.fx.length-1].k:null;
   if(score>=goal(stage)){stage++;timeLeft=Math.min(60,timeLeft+10);showChain("STAGE "+stage,"+10 SEC");lvl()}
@@ -433,24 +435,24 @@ cv.addEventListener("pointerup",e=>{if(!pd)return;if(!pd.done){const p=pd.p;if(s
 cv.addEventListener("pointercancel",()=>{pd=null});
 addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;if(e.key==="p"||e.key==="P"||e.key==="Escape"){if(state==="play"||state==="pause")pause(state==="play")}if(e.key==="Enter"&&!$("startOv").hidden)start()});
 /* ---------- flow ---------- */
-function start(){if(goUpd())return;["startOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);unlockAudio();reset();state="play";lastT=0;layout();bgmPlay()}
+function start(){if(goUpd())return;["startOv","modeOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);unlockAudio();reset();state="play";lastT=0;layout();bgmPlay()}
 function pause(on){if(!T||state==="over")return;state=on?"pause":"play";$("pauseOv").hidden=!on;lastT=0;on?bgmStop():bgmPlay();tbar()}
 function gameOver(){if(state==="over")return;state="over";chkUpd();rkSync();bgmStop();tbar();phase="over";const best=+(store.get("swp-best")||0);if(score>best)store.set("swp-best",score);
   $("oS").textContent=score.toLocaleString();$("oC").textContent=maxCombo;$("oL").textContent=stage;
   $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);$("nmF").classList.remove("done");$("nmF").querySelector("button").textContent="랭킹 등록";mine=null;myRec=null;rk($("rkL"));showChain("TIME UP","");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
-function home(){if(goUpd())return;state=null;bgmStop();fill();stage=1;beams=[];parts=[];rings=[];floats=[];["overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);$("startOv").hidden=false;score=0;maxCombo=0;timeLeft=60;hud();draw()}
+function home(){if(goUpd())return;state=null;bgmStop();fill();stage=1;beams=[];parts=[];rings=[];floats=[];["modeOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);$("startOv").hidden=false;score=0;maxCombo=0;timeLeft=60;hud();draw()}
 function toast(m){let e=document.getElementById("toast");if(!e){e=document.createElement("div");e.id="toast";e.className="toast";document.body.appendChild(e)}e.textContent=m;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1800)}
 const RK="swp-rank";let mine=null;
 const rkLoad=()=>{try{return JSON.parse(store.get(RK)||"[]")}catch(e){return[]}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const RANK_URL="https://script.google.com/macros/s/AKfycbzkdjVleobj98oyxlC77cUf5txCRiSB6D1zgRWU56pX22ElXAx9R8xFRGnV0nKAUbwC/exec";let rkCache=null,myRec=null;
-function rkDraw(el,l){l=l.slice(0,20);let hit=false;el.innerHTML=l.length?l.map((r,i)=>{const me=!hit&&myRec&&r.n===myRec.n&&r.s===myRec.s;if(me)hit=true;return `<li class="${me?"me":""}"><em>${i+1}</em>${esc(r.n)}<small>STAGE ${r.g||r.v||1}</small><b>${Number(r.s).toLocaleString()}</b></li>`}).join(""):`<li class="empty">아직 기록이 없어요</li>`}
+function rkDraw(el,l){l=l.slice(0,20);let hit=false;el.innerHTML=l.length?l.map((r,i)=>{const me=!hit&&myRec&&r.n===myRec.n&&r.s===myRec.s;if(me)hit=true;return `<li class="${me?"me":""}"><em>${i+1}</em>${esc(r.n)}<small>${({easy:"EASY · ",normal:"NORMAL · ",hard:"HARD · ","이지":"EASY · ","노멀":"NORMAL · ","하드":"HARD · "}[r.m]||"")}STAGE ${r.g||r.v||1}</small><b>${Number(r.s).toLocaleString()}</b></li>`}).join(""):`<li class="empty">아직 기록이 없어요</li>`}
 /* 서버 랭킹 + 이 폰 기록을 합쳐서 보여줌 (서버 응답이 늦거나 실패해도 마지막으로 받은 서버 랭킹 유지) */
 function rkMerge(srv){const m=new Map();[...(srv||[]),...rkLoad()].forEach(r=>{const k=r.n+"|"+r.s+"|"+(r.g||r.v||1);if(!m.has(k))m.set(k,r)});return [...m.values()].sort((a,b)=>b.s-a.s)}
 function rkSaved(){try{return JSON.parse(store.get("swp-srv")||"null")}catch(e){return null}}
 async function rkFetch(){for(let i=0;i<3;i++){try{const j=await fetch(RANK_URL+"?g=switchpang&_="+Date.now(),{cache:"no-store"}).then(r=>r.json());if(j&&Array.isArray(j.top)){rkCache=j.top;store.set("swp-srv",JSON.stringify(j.top));return true}}catch(e){}await new Promise(r=>setTimeout(r,1200*(i+1)))}return false}
 function rk(el){if(!rkCache)rkCache=rkSaved();rkDraw(el,rkMerge(rkCache));rkFetch().then(ok=>{if(ok)rkDraw(el,rkMerge(rkCache))})}
-function rkSend(r){return fetch(`${RANK_URL}?g=switchpang&a=add&n=${encodeURIComponent(r.n)}&s=${r.s}&v=${r.g||1}&x=${r.c||0}`+(r.d?`&d=${encodeURIComponent(r.d)}`:"")).then(x=>x.ok).catch(()=>false)}
+function rkSend(r){return fetch(`${RANK_URL}?g=switchpang&a=add&n=${encodeURIComponent(r.n)}&s=${r.s}&v=${r.g||1}&x=${r.c||0}&m=${r.m||"normal"}`+(r.d?`&d=${encodeURIComponent(r.d)}`:"")).then(x=>x.ok).catch(()=>false)}
 /* 아직 서버에 안 올라간 기록을 모두 올림 (기록 하나하나 확인, 실패하면 다음에 다시) */
 let rkBusy=false;
 async function rkSync(){if(rkBusy)return;rkBusy=true;try{let up=[];try{up=JSON.parse(store.get("swp-up")||"[]")}catch(e){}
@@ -464,8 +466,8 @@ function chkUpd(){fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).t
 function goUpd(){if(!needUpd)return false;location.replace(location.pathname+"?v="+needUpd);return true}
 addEventListener("visibilitychange",()=>{if(!document.hidden&&state!=="play"){rkSync();chkUpd()}});
 $("nmF").addEventListener("submit",e=>{e.preventDefault();if(mine||score<=0)return;const n=($("nmI").value.trim()||"익명").slice(0,8);store.set("pang-name",n);
-  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved","done");$("nmF").querySelector("button").textContent="등록 완료 ✓";toast("랭킹에 등록되었어요!");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
-$("startB").onclick=start;$("againB").onclick=start;$("homeB").onclick=home;
+  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,m:MODE,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved","done");$("nmF").querySelector("button").textContent="등록 완료 ✓";toast("랭킹에 등록되었어요!");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
+$("startB").onclick=()=>{unlockAudio();$("modeOv").hidden=false};document.querySelectorAll(".ob.md[data-m]").forEach(b=>b.onclick=()=>{MODE=b.dataset.m;NC={easy:5,normal:6,hard:7}[MODE];MUL={easy:.5,normal:1,hard:2}[MODE];start()});$("modeBack").onclick=()=>{$("modeOv").hidden=true};$("againB").onclick=start;$("homeB").onclick=home;
 $("rankB").onclick=()=>{rk($("rkL2"));$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
 $("bgmB").onclick=()=>{bgmOn=!bgmOn;store.set("swp-bgm",bgmOn?"1":"0");bgmBtn();if(bgmOn&&state==="play")bgmPlay();else bgmStop()};bgmBtn();
 $("sfxB").onclick=()=>{sfxOn=!sfxOn;store.set("swp-sfx",sfxOn?"1":"0");bgmBtn();unlockAudio();if(sfxOn)tone("sine",660,880,.1,.03)};
