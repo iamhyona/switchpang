@@ -113,7 +113,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792700786";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792700787";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -442,7 +442,11 @@ const rkLoad=()=>{try{return JSON.parse(store.get(RK)||"[]")}catch(e){return[]}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const RANK_URL="https://script.google.com/macros/s/AKfycbzkdjVleobj98oyxlC77cUf5txCRiSB6D1zgRWU56pX22ElXAx9R8xFRGnV0nKAUbwC/exec";let rkCache=null,myRec=null;
 function rkDraw(el,l){l=l.slice(0,20);let hit=false;el.innerHTML=l.length?l.map((r,i)=>{const me=!hit&&myRec&&r.n===myRec.n&&r.s===myRec.s;if(me)hit=true;return `<li class="${me?"me":""}"><em>${i+1}</em>${esc(r.n)}<small>STAGE ${r.g||r.v||1}</small><b>${Number(r.s).toLocaleString()}</b></li>`}).join(""):`<li class="empty">아직 기록이 없어요</li>`}
-function rk(el){rkDraw(el,rkCache||rkLoad());fetch(RANK_URL+"?g=switchpang").then(r=>r.json()).then(j=>{if(j&&Array.isArray(j.top)){rkCache=j.top;rkDraw(el,rkCache)}}).catch(()=>{})}
+/* 서버 랭킹 + 이 폰 기록을 합쳐서 보여줌 (서버 응답이 늦거나 실패해도 마지막으로 받은 서버 랭킹 유지) */
+function rkMerge(srv){const m=new Map();[...(srv||[]),...rkLoad()].forEach(r=>{const k=r.n+"|"+r.s+"|"+(r.g||r.v||1);if(!m.has(k))m.set(k,r)});return [...m.values()].sort((a,b)=>b.s-a.s)}
+function rkSaved(){try{return JSON.parse(store.get("swp-srv")||"null")}catch(e){return null}}
+async function rkFetch(){for(let i=0;i<3;i++){try{const j=await fetch(RANK_URL+"?g=switchpang&_="+Date.now(),{cache:"no-store"}).then(r=>r.json());if(j&&Array.isArray(j.top)){rkCache=j.top;store.set("swp-srv",JSON.stringify(j.top));return true}}catch(e){}await new Promise(r=>setTimeout(r,1200*(i+1)))}return false}
+function rk(el){if(!rkCache)rkCache=rkSaved();rkDraw(el,rkMerge(rkCache));rkFetch().then(ok=>{if(ok)rkDraw(el,rkMerge(rkCache))})}
 function rkSend(r){return fetch(`${RANK_URL}?g=switchpang&a=add&n=${encodeURIComponent(r.n)}&s=${r.s}&v=${r.g||1}&x=${r.c||0}`+(r.d?`&d=${encodeURIComponent(r.d)}`:"")).then(x=>x.ok).catch(()=>false)}
 /* 아직 서버에 안 올라간 기록을 모두 올림 (기록 하나하나 확인, 실패하면 다음에 다시) */
 let rkBusy=false;
@@ -457,7 +461,7 @@ function chkUpd(){fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).t
 function goUpd(){if(!needUpd)return false;location.replace(location.pathname+"?v="+needUpd);return true}
 addEventListener("visibilitychange",()=>{if(!document.hidden&&state!=="play"){rkSync();chkUpd()}});
 $("nmF").addEventListener("submit",e=>{e.preventDefault();if(mine||score<=0)return;const n=($("nmI").value.trim()||"익명").slice(0,8);store.set("pang-name",n);
-  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved");$("nmI").blur();if(rkCache){rkCache.push(r);rkCache.sort((x,y)=>y.s-x.s)}rkDraw($("rkL"),rkCache||rkLoad());rkSync().then(()=>rk($("rkL")))});
+  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
 $("startB").onclick=start;$("againB").onclick=start;$("homeB").onclick=home;
 $("rankB").onclick=()=>{rk($("rkL2"));$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
 $("bgmB").onclick=()=>{bgmOn=!bgmOn;store.set("swp-bgm",bgmOn?"1":"0");bgmBtn();if(bgmOn&&state==="play")bgmPlay();else bgmStop()};bgmBtn();
