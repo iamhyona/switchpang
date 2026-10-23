@@ -101,13 +101,19 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 .pix svg{width:100%;height:100%;display:block}
 .pix[data-ic=flag]{color:var(--sub);width:12px;height:12px}
 .pix[data-ic=clock]{color:var(--sub);width:12px;height:12px}
-#tmb.low b{color:#ff5a6e;text-shadow:0 0 8px rgba(255,59,92,.6)}#tmb.low .pix{color:#ff5a6e}
+
 .pix[data-ic=bolt]{color:var(--gold);width:12px;height:12px}
 .pix[data-ic=flag]{color:var(--sub);width:12px;height:12px}
-#pg{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--gold);box-shadow:0 0 6px var(--gold);transition:width .3s;font-style:normal}
+.tbar{width:100%;display:flex;align-items:center;gap:7px;flex-shrink:0;height:14px}
+.tbar .pix{color:var(--sub);width:12px;height:12px}
+.tbt{flex:1;height:10px;border:2px solid var(--line2);border-radius:6px;background:#141519;overflow:hidden;box-sizing:border-box}
+.tbt i{display:block;height:100%;width:100%;background:var(--gold);box-shadow:0 0 8px rgba(242,176,0,.6);border-radius:3px;transition:width .25s linear,background .3s}
+.tbar.low .tbt i{background:#ff5a6e;box-shadow:0 0 10px rgba(255,59,92,.7);animation:tbp .6s ease-in-out infinite alternate}.tbar.low .pix{color:#ff5a6e}
+@keyframes tbp{to{opacity:.55}}
+#bgmB.off .pix{opacity:.35}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792700780";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792700781";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -125,12 +131,13 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
   <div class="hd"><span class="rb" id="rb1"></span><span>© 2026 PARK HYONA</span><span class="rb r" id="rb2"></span></div>
   <div class="scr" id="scr">
     <div class="fld" id="fld">
+      <div class="tbar" id="tbar"><i class="pix" data-ic="clock"></i><div class="tbt"><i id="tbI"></i></div></div>
       <div class="side" id="side">
-        <div class="bx" id="tmb"><i class="pix" data-ic="clock"></i><b id="tm">60</b></div>
-        <div class="bx wide" style="position:relative;overflow:hidden"><b id="sc">0</b><i id="pg"></i></div>
+        <div class="bx wide"><b id="sc">0</b></div>
         <div class="bx"><i class="pix" data-ic="flag"></i><b id="stg">01</b></div>
         <button class="sb" id="pauseB" aria-label="일시정지"><i class="pix" data-ic="pause"></i></button>
         <button class="sb" id="restartB" aria-label="다시 시작"><i class="pix" data-ic="restart"></i></button>
+        <button class="sb" id="bgmB" aria-label="배경음악"><i class="pix" data-ic="note"></i></button>
       </div>
       <div class="bw"><div class="well" id="well"><canvas id="cv"></canvas></div><div class="chain" id="chain"><b id="chainT">2 COMBO!</b><span>COMBO BONUS</span></div></div>
     </div>
@@ -202,6 +209,7 @@ const PIX={
  bolt:['....111.','...111..','..111...','.111111.','...111..','..111...','.111....','.1......'],
  pause:['........','.11..11.','.11..11.','.11..11.','.11..11.','.11..11.','.11..11.','........'],
  clock:['..1111..','.1....1.','1..1...1','1..1...1','1..111.1','1......1','.1....1.','..1111..'],
+ note:['....11..','....111.','....1.11','....1...','....1...','.1111...','11111...','.111....'],
  restart:['..11111.','.1....11','1....111','1.......','1.......','1......1','.1....1.','..1111..']};
 document.querySelectorAll('[data-ic]').forEach(el=>{const m=PIX[el.dataset.ic];let r='';m.forEach((row,y)=>[...row].forEach((v,x)=>{if(v==='1')r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02"/>`}));el.innerHTML=`<svg viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor">${r}</svg>`});
 const N=7,NC=6;
@@ -301,7 +309,7 @@ function tick(t){requestAnimationFrame(tick);const dt=Math.min(50,t-(lastT||t));
   if(state==="play"&&T){
     if(!ending){timeLeft-=s*(1+(stage-1)*.12);if(timeLeft<=0){timeLeft=0;ending=true}}
     if(bonusT>0)bonusT=Math.max(0,bonusT-s*1.5);
-    $("tm").textContent=Math.ceil(timeLeft);$("tmb").classList.toggle("low",timeLeft<=10);
+    tbar();
     phT+=dt;
     if(phase==="swap"&&phT>=170){if(swapBack){phase=ending?"fall":"idle";if(ending)after()}else{const P=swapResult();if(P)startClear(P);else{const [ax,ay]=swapA,[bx,by]=swapB;const tt=T[ay][ax];T[ay][ax]=T[by][bx];T[by][bx]=tt;swapBack=true;phT=0;bump()}}}
     else if(phase==="clear"){if(phT>=220&&!clearSet.burst){clearSet.burst=true;burst()}if(phT>=470)collapse()}
@@ -370,7 +378,23 @@ function tone(type,f0,f1,dur,vol,del){try{if(!AC)return;vol*=3;const t=AC.curren
 function sfx(ch){const f=520*Math.pow(2,Math.min(ch-1,10)/6);tone("sine",f*.55,f*1.35,.09,.035);tone("triangle",f*1.5,f*1.5,.18,.016,.05);if(ch>=2)tone("sine",f*2,f*2,.22,.012,.1)}
 const boom=lv=>{tone("sine",150,60,.3,.05);tone("triangle",900,1300,.15,.012,.05);if(lv>=3)for(let i=0;i<5;i++)tone("sine",660*Math.pow(1.26,i),660*Math.pow(1.26,i),.2,.012,.07*i)},lvl=()=>{[523,659,784,1047].forEach((f,i)=>tone("triangle",f,f,.18,.02,i*.1))};
 const plop=()=>tone("sine",320,140,.1,.05),whoosh=()=>tone("triangle",500,800,.08,.04),bump=()=>tone("square",180,120,.1,.04);
-function hud(){$("sc").textContent=score.toLocaleString();$("stg").textContent=String(stage).padStart(2,"0");const g0=stage>1?goal(stage-1):0;$("pg").style.width=Math.max(0,Math.min(100,(score-g0)/(goal(stage)-g0)*100))+"%";$("tm").textContent=Math.ceil(timeLeft)}
+function hud(){$("sc").textContent=score.toLocaleString();$("stg").textContent=String(stage).padStart(2,"0");tbar()}
+function tbar(){$("tbI").style.width=Math.max(0,Math.min(100,timeLeft/60*100))+"%";$("tbar").classList.toggle("low",timeLeft<=10&&state==="play")}
+/* ---------- BGM (은은한 생성 음악) ---------- */
+let bgmOn=(store.get("swp-bgm")??"1")!=="0",bgmG=null,bgmT=null,bgmN=0,bgmAt=0;
+const BG_CH=[[48,55,64,71],[45,52,60,67],[41,48,57,64],[43,50,59,62]],BG_P=[0,2,4,7,9];
+const mf=m=>440*Math.pow(2,(m-69)/12);
+function bnote(f,t,d,v,type){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+Math.min(.08,d*.3));g.gain.exponentialRampToValueAtTime(.0005,t+d);o.connect(g).connect(bgmG);o.start(t);o.stop(t+d+.05)}
+function bgmSched(){if(!AC||!bgmG)return;const st=60/88/2;while(bgmAt<AC.currentTime+.4){const t=bgmAt,i=bgmN%32,ch=BG_CH[(bgmN>>3)%4];
+  if(i%8===0){ch.forEach(m=>bnote(mf(m),t,st*8.4,.05,"sine"));bnote(mf(ch[0]-12),t,st*7,.09,"triangle")}
+  if(i%8===4)bnote(mf(ch[0]-12+7),t,st*3.5,.05,"triangle");
+  if(i%2===0||Math.random()<.25){const m=60+12*(Math.random()<.35)+BG_P[(Math.random()*5)|0];if(Math.random()<.7)bnote(mf(m),t,st*3,.07,"triangle")}
+  bgmN++;bgmAt+=st}}
+function bgmPlay(){if(!bgmOn)return;try{unlockAudio();if(!AC)return;if(!bgmG){bgmG=AC.createGain();const lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1600;bgmG.connect(lp).connect(AC.destination)}
+  bgmG.gain.cancelScheduledValues(AC.currentTime);bgmG.gain.setValueAtTime(bgmG.gain.value,AC.currentTime);bgmG.gain.linearRampToValueAtTime(.32,AC.currentTime+1.2);
+  if(!bgmT){bgmAt=AC.currentTime+.08;bgmT=setInterval(bgmSched,120);bgmSched()}}catch(e){}}
+function bgmStop(){try{if(bgmT){clearInterval(bgmT);bgmT=null}if(bgmG&&AC){bgmG.gain.cancelScheduledValues(AC.currentTime);bgmG.gain.setValueAtTime(bgmG.gain.value,AC.currentTime);bgmG.gain.linearRampToValueAtTime(0,AC.currentTime+.4)}}catch(e){}}
+function bgmBtn(){$("bgmB").classList.toggle("off",!bgmOn)}
 /* ---------- input ---------- */
 let pd=null;
 const cellAt=e=>{const r=cv.getBoundingClientRect();return [Math.floor((e.clientX-r.left)/CS),Math.floor((e.clientY-r.top)/CS)]};
@@ -381,12 +405,12 @@ cv.addEventListener("pointerup",e=>{if(!pd)return;if(!pd.done){const p=pd.p;if(s
 cv.addEventListener("pointercancel",()=>{pd=null});
 addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;if(e.key==="p"||e.key==="P"||e.key==="Escape"){if(state==="play"||state==="pause")pause(state==="play")}if(e.key==="Enter"&&!$("startOv").hidden)start()});
 /* ---------- flow ---------- */
-function start(){["startOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);unlockAudio();reset();state="play";lastT=0;layout()}
-function pause(on){if(!T||state==="over")return;state=on?"pause":"play";$("pauseOv").hidden=!on;lastT=0}
-function gameOver(){if(state==="over")return;state="over";phase="over";const best=+(store.get("swp-best")||0);if(score>best)store.set("swp-best",score);
+function start(){["startOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);unlockAudio();reset();state="play";lastT=0;layout();bgmPlay()}
+function pause(on){if(!T||state==="over")return;state=on?"pause":"play";$("pauseOv").hidden=!on;lastT=0;on?bgmStop():bgmPlay();tbar()}
+function gameOver(){if(state==="over")return;state="over";bgmStop();tbar();phase="over";const best=+(store.get("swp-best")||0);if(score>best)store.set("swp-best",score);
   $("oS").textContent=score.toLocaleString();$("oC").textContent=maxCombo;$("oL").textContent=stage;
   $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);mine=null;rk($("rkL"));showChain("TIME UP","");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
-function home(){state=null;fill();stage=1;beams=[];parts=[];rings=[];floats=[];["overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);$("startOv").hidden=false;score=0;maxCombo=0;timeLeft=60;hud();draw()}
+function home(){state=null;bgmStop();fill();stage=1;beams=[];parts=[];rings=[];floats=[];["overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);$("startOv").hidden=false;score=0;maxCombo=0;timeLeft=60;hud();draw()}
 const RK="swp-rank";let mine=null;
 const rkLoad=()=>{try{return JSON.parse(store.get(RK)||"[]")}catch(e){return[]}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -395,6 +419,8 @@ $("nmF").addEventListener("submit",e=>{e.preventDefault();if(mine||score<=0)retu
   const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;$("nmF").classList.add("saved");rk($("rkL"));$("nmI").blur()});
 $("startB").onclick=start;$("againB").onclick=start;$("homeB").onclick=home;
 $("rankB").onclick=()=>{rk($("rkL2"));$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
+$("bgmB").onclick=()=>{bgmOn=!bgmOn;store.set("swp-bgm",bgmOn?"1":"0");bgmBtn();if(bgmOn&&state==="play")bgmPlay();else bgmStop()};bgmBtn();
+addEventListener("visibilitychange",()=>{if(document.hidden)bgmStop();else if(state==="play")bgmPlay()});
 $("pauseB").onclick=()=>pause(state==="play");$("resumeB").onclick=()=>pause(false);$("quitB").onclick=()=>{$("pauseOv").hidden=true;gameOver()};
 $("restartB").onclick=()=>{if(state==="play"||state==="pause"||state==="over")start()};
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&state==="play")pause(true)});
