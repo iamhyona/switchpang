@@ -130,7 +130,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 .st b{font-size:18px!important}
 .go{font-size:40px!important}
 </style>
-<link rel="stylesheet" href="../games/ph.css?v=1"><style>#startOv{padding:0!important}#startOv::before,#startOv::after{display:none!important}.lcd-label{padding-left:2px;padding-right:2px}</style></head>
+<link rel="stylesheet" href="../games/ph.css?v=2"><style>#startOv{padding:0!important}#startOv::before,#startOv::after{display:none!important}.lcd-label{padding-left:2px;padding-right:2px}</style></head>
 <body>
 <div class="ph">
   <div class="lcd-label"><i class="ln"></i><span class="copy">© 2026 PARK HYONA</span><i class="ln"></i></div>
@@ -148,7 +148,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
       <div class="bw"><div class="well" id="well"><canvas id="cv"></canvas></div><div class="chain" id="chain"><b id="chainT">2 COMBO!</b><span>COMBO BONUS</span></div></div>
     </div>
 
-    <div class="ov" id="startOv"><div class="phS"><i class="phS-sp a"></i><div class="phS-logo" data-word="SWITCH" id="logo"></div><div class="phS-show" id=show></div><i class="phS-sp b"></i><div class="phS-btns"><button class="phS-b" id="startB">SINGLE PLAY</button><button class="phS-b gold" id="rankB">RANKING</button></div><i class="phS-sp c"></i><div class="phS-credit">이 게임은 서울 마포구에 사는 박현아가 만든<br>비상업용 게임이에요. 지치고 힘들 때<br>잠시 머리 식히며 마음껏 즐겨 주세요.</div></div></div>
+    <div class="ov" id="startOv"><div class="phS"><i class="phS-sp a"></i><div class="phS-logo" data-word="SWITCH|PANG" id="logo"></div><div class="phS-show" id=show></div><i class="phS-sp b"></i><div class="phS-btns"><button class="phS-b" id="startB">SINGLE PLAY</button><button class="phS-b gold" id="rankB">RANKING</button></div><i class="phS-sp c"></i><div class="phS-credit">이 게임은 서울 마포구에 사는 박현아가 만든<br>비상업용 게임이에요. 지치고 힘들 때<br>잠시 머리 식히며 마음껏 즐겨 주세요.</div></div></div>
     <div class="ov" id="modeOv" hidden><div class="paused">MODE</div><div class="gmT" id="gmT"><button class="gmb" data-g="time">TIME ATTACK<small>60초 · 팡 하면 충전</small></button><button class="gmb" data-g="stage">STAGE<small>20번 안에 목표 점수</small></button></div><button class="ob md easy" data-m="easy">EASY<small>팡팡이 6종류 · 점수 ×0.5</small></button><button class="ob md" data-m="normal">NORMAL<small>팡팡이 7종류 · 점수 ×1</small></button><button class="ob md hard" data-m="hard">HARD<small>팡팡이 8종류 · 점수 ×2</small></button><button class="ob md back" id="modeBack">BACK</button></div>
     <div class="ov" id="pauseOv" hidden><div class="paused">PAUSE</div><button class="ob" id="resumeB">CONTINUE</button><button class="ob red" id="quitB">GIVE UP</button></div>
     <div class="ov" id="overOv" hidden>
@@ -480,5 +480,5 @@ addEventListener("resize",layout);
 fill();hud();layout();requestAnimationFrame(tick);setTimeout(layout,300);
 </script>
 
-<script src="../games/ph.js?v=1"></script></body>
+<script src="../games/ph.js?v=2"></script></body>
 </html>
