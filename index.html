@@ -118,7 +118,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792831000";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792838000";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -216,6 +216,7 @@ let CS=48,DPR=1,T=null,state=null,lastT=0,NOW=0,score=0,combo=0,maxCombo=0,pops=
 let beams=[],parts=[],rings=[],floats=[],shake=0,shakeA=0,flashA=0;
 const rc=()=>PAL[Math.random()*PAL.length|0];
 /* 게임 방식: time = 타임어택(60초, 팡 하면 충전) · stage = 스테이지(20번 안에 목표 점수) */
+let stLines=0,ALLC=false; /* 이번 스테이지에서 터뜨린 줄 · 10스테이지 클리어 */
 let MOVES=20; /* 마스터는 15번 */let GM="time",moves=MOVES,stS=0,stClr=false,RKGM="time";
 const tgt=()=>Math.round((500+250*(stage-1))*MUL/10)*10;
 function layout(){DPR=Math.min(window.devicePixelRatio||1,3);cv.style.width=cv.style.height="0px";
@@ -228,7 +229,19 @@ function runs(B){const R=[];
   for(let x=0;x<NC;x++){let s=0;for(let y=1;y<=NR;y++){if(y<NR&&okc(B[y][x])&&okc(B[s][x])&&B[y][x].c===B[s][x].c)continue;if(y-s>=3&&okc(B[s][x])){const cl=[];for(let k=s;k<y;k++)cl.push([x,k]);R.push({d:"v",cl})}s=y}}
   return R}
 function runsAt(B){const m=new Set();for(const r of runs(B))for(const [x,y] of r.cl)m.add(x+","+y);return m}
-function plan(pref){const R=runs(T),set=new Set(),cnt={},sp=[];
+function plan(pref){const R=runs(T),set=new Set(),sp=[];
+  for(const r of R)for(const [x,y] of r.cl)set.add(x+","+y);
+  if(!set.size)return null;
+  const N4=[[1,0],[-1,0],[0,1],[0,-1]];
+  /* 3개 이상 맞추면 거기에 이어진 같은 팡팡이는 모두 함께 터짐 */
+  {const q=[...set];while(q.length){const [x,y]=q.pop().split(",").map(Number),c=T[y][x].c;for(const [dx,dy] of N4){const u=x+dx,v=y+dy;if(u<0||v<0||u>=NC||v>=NR)continue;const t=T[v][u],k=u+","+v;if(!set.has(k)&&okc(t)&&t.c===c){set.add(k);q.push(k)}}}}
+  /* 아이템 규칙 (덩어리 크기): 4개 줄폭탄 · 5개 폭탄 · 6개 이상 무지개 */
+  const seen=new Set();for(const k0 of set){if(seen.has(k0))continue;const g=[],st=[k0];seen.add(k0);
+   while(st.length){const k=st.pop();g.push(k);const [x,y]=k.split(",").map(Number),c=T[y][x].c;for(const [dx,dy] of N4){const kk=(x+dx)+","+(y+dy);if(set.has(kk)&&!seen.has(kk)&&T[y+dy][x+dx].c===c){seen.add(kk);st.push(kk)}}}
+   if(g.length<4)continue;const cl=g.map(k=>k.split(",").map(Number));let c=null;for(const p of pref||[])if(cl.some(q=>q[0]===p[0]&&q[1]===p[1])){c=p;break}if(!c)c=cl[cl.length>>1];
+   if(T[c[1]][c[0]].sp)continue;sp.push({x:c[0],y:c[1],sp:g.length>=6?"r":g.length===5?"b":(pref?(pref[0][0]===pref[1][0]?"v":"h"):(Math.random()<.5?"h":"v"))})}
+  return {set,sp,runs:R.length}}
+function oldPlan(pref){const R=runs(T),set=new Set(),cnt={},sp=[];
   for(const r of R)for(const [x,y] of r.cl){const k=x+","+y;set.add(k);cnt[k]=(cnt[k]||0)+1}
   if(!set.size)return null;
   const has=(x,y)=>sp.some(q=>q.x===x&&q.y===y);
@@ -256,7 +269,7 @@ function shuffle(){const all=T.flat();let tries=0;
     for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){const t=all[y*NC+x];T[y][x]=t;t.x=x;t.y=y}tries++}while((runsAt(T).size||!findMove())&&tries<200);
   showChain("SHUFFLE","NO MORE MOVES");for(const t of T.flat())t.lt=NOW}
 const goal=g=>250*g*(g+3);
-function reset(){fill();moves=MOVES;stS=0;stClr=false;score=0;combo=0;maxCombo=0;pops=0;timeLeft=60;stage=1;phase="idle";sel=null;for(const t of T.flat())t.lt=(NOW||performance.now())+(t.x+t.y)*25;hint=null;idleT=0;ending=false;beams=[];parts=[];rings=[];floats=[];hud()}
+function reset(){fill();moves=MOVES;stS=0;stClr=false;score=0;combo=0;maxCombo=0;pops=0;timeLeft=60;stage=1;stLines=0;ALLC=false;phase="idle";sel=null;for(const t of T.flat())t.lt=(NOW||performance.now())+(t.x+t.y)*25;hint=null;idleT=0;ending=false;beams=[];parts=[];rings=[];floats=[];hud()}
 function trySwap(a,b){if(phase!=="idle"||state!=="play")return;const [ax,ay]=a,[bx,by]=b;if(Math.abs(ax-bx)+Math.abs(ay-by)!==1)return;if((T[ay][ax]&&T[ay][ax].rk)||(T[by][bx]&&T[by][bx].rk)){showChain("ICE!","옆에서 팡 터뜨리면 녹아요");return}
   swapA=a;swapB=b;const t=T[ay][ax];T[ay][ax]=T[by][bx];T[by][bx]=t;phase="swap";phT=0;sel=null;hint=null;idleT=0;swapBack=false;whoosh()}
 function swapResult(){const [ax,ay]=swapA,[bx,by]=swapB,A=T[ay][ax],B=T[by][bx];
@@ -268,14 +281,19 @@ function swapResult(){const [ax,ay]=swapA,[bx,by]=swapB,A=T[ay][ax],B=T[by][bx];
   const P=plan([swapA,swapB]);if(!P)return null;P.fx=[];expand(P.set,P.fx);return P}
 function startClear(P){const m=P.set;
   for(const q of P.sp){const k=q.x+","+q.y,t=T[q.y][q.x];if(!t)continue;m.delete(k);t.sp=q.sp;if(q.sp==="r")t.c=8;t.ck=false;t.lt=NOW+200;t.fired=0}
-  clearSet=m;clearSet.fx=P.fx||[];clearSet.sp=P.sp;phase="clear";phT=0;combo++;if(combo>maxCombo)maxCombo=combo;if(window.PHVS&&PHVS.active){vsAcc+=m.size*combo;const k=Math.floor(vsAcc/6);if(k>0){vsAcc-=k*6;PHVS.send({t:"ice",n:Math.min(8,k)});floats.push({x:CS*NC/2,y:CS*.8,t:0,life:1.1,txt:"ATTACK ▶ "+Math.min(8,k),big:true})}} /* 대전: 터뜨린 만큼(6개당 1칸, 콤보면 더 많이) 상대 팡팡이를 얼림 */
+  clearSet=m;clearSet.fx=P.fx||[];clearSet.sp=P.sp;phase="clear";phT=0;combo++;if(combo>maxCombo)maxCombo=combo;
+  {/* 아이템 규칙: 콤보 2 줄폭탄 · 콤보 3 폭탄 · 콤보 4+ 무지개 / 한 스테이지에서 10줄마다 폭탄 (타임어택은 시계) */
+   const bon=[];if(combo===2)bon.push(Math.random()<.5?"h":"v");else if(combo===3)bon.push("b");else if(combo>=4)bon.push("r");
+   stLines+=P.runs||0;while(stLines>=10){stLines-=10;bon.push(GM==="stage"?"b":"ck")}
+   const cand=[];if(bon.length)for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){const t=T[y][x];if(okc(t)&&!t.sp&&!t.ck&&!m.has(x+","+y)&&!P.sp.some(q=>q.x===x&&q.y===y))cand.push([t,x,y])}
+   for(const k of bon){if(!cand.length)break;const [t,cx0,cy0]=cand.splice(Math.random()*cand.length|0,1)[0];if(k==="ck")t.ck=true;else{t.sp=k;t.fired=0;if(k==="r")t.c=8}t.lt=NOW+200;floats.push({x:(cx0+.5)*CS,y:(cy0+.5)*CS,t:0,life:1.1,txt:k==="ck"?"+TIME":k==="r"?"RAINBOW":k==="b"?"BOMB":"LINE",big:true})}}if(window.PHVS&&PHVS.active){vsAcc+=m.size*combo;const k=Math.floor(vsAcc/6);if(k>0){vsAcc-=k*6;PHVS.send({t:"ice",n:Math.min(8,k)});floats.push({x:CS*NC/2,y:CS*.8,t:0,life:1.1,txt:"ATTACK ▶ "+Math.min(8,k),big:true})}} /* 대전: 터뜨린 만큼(6개당 1칸, 콤보면 더 많이) 상대 팡팡이를 얼림 */
   const cells=[...m].map(k=>k.split(",").map(Number));const n=cells.length;let clocks=0;for(const [x,y] of cells)if(T[y][x]&&T[y][x].ck)clocks++;
   const mult=combo*(n>=5?2:n>=4?1.5:1);const gain=Math.round(10*n*mult*MUL);score+=gain;pops+=n;
   let add=n*.15+(combo-1)*.4+clocks*5;timeLeft=Math.min(60,timeLeft+add);
   const big=P.fx&&P.fx.length?P.fx[P.fx.length-1].k:null;
   if(GM==="stage"){stS+=gain;if(clocks)moves+=clocks*3}
   if(GM==="stage"&&!stClr&&stS>=tgt()){stClr=true;showChain("STAGE CLEAR!","");lvl()}
-  else if(GM!=="stage"&&score>=goal(stage)){stage++;timeLeft=Math.min(60,timeLeft+10);showChain("STAGE "+stage,"+10 SEC");lvl()}
+  else if(GM!=="stage"&&score>=goal(stage)){stage++;stLines=0;timeLeft=Math.min(60,timeLeft+10);showChain("STAGE "+stage,"+10 SEC");lvl()}
   else if(clocks)showChain(GM==="stage"?"+"+clocks*3+" MOVES":"+"+clocks*5+" SEC",GM==="stage"?"MOVE BONUS":"TIME BONUS");
   else if(combo>=2)showChain(combo+" COMBO!","COMBO BONUS");
   else if(big==="r")showChain("RAINBOW!","");else if(big==="b")showChain("BOMB!","");else if(big==="h"||big==="v")showChain("LINE!","");
@@ -297,7 +315,7 @@ function collapse(){for(const key of clearSet){const [x,y]=key.split(",").map(Nu
   for(const key of clearSet){const [x,y]=key.split(",").map(Number);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const u=x+dx,v=y+dy,t=T[v]&&T[v][u];if(t&&t.rk){t.rk=false;t.lt=NOW}}} /* 옆에서 터지면 얼음이 녹음 */
   let clocks=T.flat().filter(t=>t&&t.ck).length,itm=0;
   for(let x=0;x<NC;x++){let w=NR-1;for(let y=NR-1;y>=0;y--)if(T[y][x]){if(w!==y){T[w][x]=T[y][x];T[y][x]=null}w--}
-    let k=0;for(let y=w;y>=0;y--){k++;const t=tile(rc(),x,-k-Math.random()*.3);if(clocks<2&&Math.random()<.035+stage*.004){t.ck=true;clocks++}else if(itm<2){const r=Math.random();if(r<.008){t.sp="r";t.c=8;t.fired=0;itm++}else if(r<.028){t.sp="b";t.fired=0;itm++}else if(r<.07){t.sp=Math.random()<.5?"h":"v";t.fired=0;itm++}} /* 새 블록 중 일부는 아이템으로 */T[y][x]=t}}
+    let k=0;for(let y=w;y>=0;y--){k++;const t=tile(rc(),x,-k-Math.random()*.3);if(GM!=="stage"&&clocks<2&&Math.random()<.03+stage*.003){t.ck=true;clocks++} /* 아이템은 규칙대로만 · 시계는 타임어택에서만 */T[y][x]=t}}
   clearSet=null;phase="fall"}
 function settle(dt){let moving=false;const s=dt/1000;
   for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){const t=T[y][x];if(!t)continue;t.x=x;
@@ -306,7 +324,7 @@ function settle(dt){let moving=false;const s=dt/1000;
 let landN=0;
 function after(){const P=plan(null);if(P){P.fx=[];expand(P.set,P.fx);startClear(P);return}
   combo=0;
-  if(GM==="stage"){if(stClr){const bn=Math.round(moves*30*MUL);score+=bn;stage++;stS=0;moves=MOVES;stClr=false;showChain("STAGE "+stage,(bn?"+"+bn+" BONUS · ":"")+"GOAL "+tgt().toLocaleString())}else if(moves<=0){hud();gameOver();return}}
+  if(GM==="stage"){if(stClr){const bn=Math.round(moves*30*MUL);score+=bn;if(stage>=10){ALLC=true;hud();gameOver();return} /* 10스테이지 끝 */stage++;stS=0;stLines=0;moves=MOVES;stClr=false;showChain("STAGE "+stage+"/10",(bn?"+"+bn+" BONUS · ":"")+"GOAL "+tgt().toLocaleString())}else if(moves<=0){hud();gameOver();return}}
   hud();
   if(ending||timeLeft<=0){gameOver();return}
   if(!findMove())shuffle();phase="idle";idleT=0}
@@ -317,7 +335,7 @@ function tick(t){requestAnimationFrame(tick);const dt=Math.min(50,t-(lastT||t));
     if(bonusT>0)bonusT=Math.max(0,bonusT-s*1.5);
     tbar();
     phT+=dt;
-    if(phase==="swap"&&phT>=170){if(swapBack){phase=ending?"fall":"idle";if(ending)after()}else{const P=swapResult();if(P){if(GM==="stage")moves--;startClear(P)}else{const [ax,ay]=swapA,[bx,by]=swapB;const tt=T[ay][ax];T[ay][ax]=T[by][bx];T[by][bx]=tt;swapBack=true;phT=0;bump()}}}
+    if(phase==="swap"&&phT>=170){if(swapBack){phase=ending?"fall":"idle";if(ending)after()}else{const P=swapResult();if(P){if(GM==="stage")moves--;startClear(P)}else{const [ax,ay]=swapA,[bx,by]=swapB;const tt=T[ay][ax];T[ay][ax]=T[by][bx];T[by][bx]=tt;swapBack=true;phT=0;bump();/* 헛스왑 벌칙: 타임어택 -2초 · 스테이지 -점수 */const pen=GM==="stage"?Math.round(30*MUL):2;if(GM==="stage"){score=Math.max(0,score-pen);stS=Math.max(0,stS-pen)}else timeLeft=Math.max(0,timeLeft-pen);floats.push({x:((ax+bx)/2+.5)*CS,y:((ay+by)/2+.5)*CS,t:0,life:1,txt:GM==="stage"?"-"+pen:"-"+pen+" SEC",big:false});hud()}}}
     else if(phase==="clear"){if(phT>=220&&!clearSet.burst){clearSet.burst=true;burst()}if(phT>=470)collapse()}
     else if(phase==="fall"){landN=0;if(!settle(dt))after();else if(landN&&Math.random()<.5)plop()}
     else if(phase==="idle"){if(ending){gameOver();}idleT+=dt;if(idleT>5000&&!hint)hint=findMove()}
@@ -438,11 +456,11 @@ cv.addEventListener("pointerup",e=>{if(!pd)return;if(!pd.done){const p=pd.p;if(s
 cv.addEventListener("pointercancel",()=>{pd=null});
 addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;if(e.key==="p"||e.key==="P"||e.key==="Escape"){if(state==="play"||state==="pause")pause(state==="play")}if(e.key==="Enter"&&!$("startOv").hidden)start()});
 /* ---------- flow ---------- */
-function start(){if(goUpd())return;["startOv","modeOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);unlockAudio();NR=NRS[MODE]||8;reset();state="play";lastT=0;layout();bgmPlay();if(GM==="stage")setTimeout(()=>showChain("STAGE 1","GOAL "+tgt().toLocaleString()),250)}
+function start(){if(goUpd())return;["startOv","modeOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);unlockAudio();NR=NRS[MODE]||8;reset();state="play";lastT=0;layout();bgmPlay();if(GM==="stage")setTimeout(()=>showChain("STAGE 1/10","GOAL "+tgt().toLocaleString()),250)}
 function pause(on){if(!T||state==="over")return;if(on&&window.PHVS&&PHVS.active)return; /* 대전 중엔 일시정지 없음 */state=on?"pause":"play";$("pauseOv").hidden=!on;lastT=0;on?bgmStop():bgmPlay();tbar()}
 function gameOver(){if(state==="over")return;if(window.PHVS&&PHVS.active){state="over";bgmStop();phase="over";tbar();showChain("TIME UP","");PHVS.over(score,false);return}state="over";chkUpd();rkSync();bgmStop();tbar();phase="over";const best=+(store.get("swp-best")||0);if(score>best)store.set("swp-best",score);
   $("oS").textContent=score.toLocaleString();$("oC").textContent=maxCombo;$("oL").textContent=stage;
-  $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);$("nmF").classList.remove("done");$("nmF").querySelector("button").textContent="랭킹 등록";mine=null;myRec=null;RKGM=GM;rkCache=null;rk($("rkL"));showChain(GM==="stage"?"NO MORE MOVES":"TIME UP","");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
+  $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);$("nmF").classList.remove("done");$("nmF").querySelector("button").textContent="랭킹 등록";mine=null;myRec=null;RKGM=GM;rkCache=null;rk($("rkL"));showChain(ALLC?"ALL CLEAR!":GM==="stage"?"NO MORE MOVES":"TIME UP",ALLC?"10 STAGES":"");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
 function home(){if(goUpd())return;state=null;bgmStop();fill();stage=1;beams=[];parts=[];rings=[];floats=[];["modeOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);$("startOv").hidden=false;score=0;maxCombo=0;timeLeft=60;hud();draw()}
 function toast(m){let e=document.getElementById("toast");if(!e){e=document.createElement("div");e.id="toast";e.className="toast";document.body.appendChild(e)}e.textContent=m;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1800)}
 const RK="swp-rank";let mine=null;
@@ -475,7 +493,7 @@ PHVS.init({id:'swp',name:()=>store.get("pang-name")||"",setName:n=>store.set("pa
  data:d=>{if(d.t==="ice"&&state==="play"){const cand=T.flat().filter(t=>t&&!t.rk&&!t.sp&&t.c!==8&&!t.ck);for(let i=0;i<d.n&&cand.length;i++){const t=cand.splice(Math.random()*cand.length|0,1)[0];t.rk=true;t.lt=NOW}const cut=Math.min(5,d.n);timeLeft=Math.max(0,timeLeft-cut);tbar();showChain("ATTACKED!",d.n+"칸 얼음 · -"+cut+" SEC");shake=12;shakeA=1;flashA=.5}}, /* 대전: 얼음 + 시간 깎기 */
  stop:()=>{state="over";bgmStop();phase="over"},leave:()=>home()});
 $("vsB").onclick=()=>{unlockAudio();PHVS.menu()};
-$("startB").onclick=()=>{unlockAudio();$("modeOv").hidden=false};document.querySelectorAll(".ob.md[data-m]").forEach(b=>b.onclick=()=>{MODE=b.dataset.m;PAL={easy:[1,2,3,4,5,6],normal:[1,2,3,4,5,6,7],hard:[1,2,3,4,5,6,7,9],master:[1,2,3,4,5,6,7,9,10]}[MODE];MUL={easy:.5,normal:1,hard:2,master:3}[MODE];MOVES=MODE==="master"?15:20;phTut("swp-tut",{"goal": "같은 모양 3개 이상을 한 줄로 맞추면 팡!<br>TIME ATTACK은 팡 하면 시간 충전, STAGE는 20번 안에 목표 점수.", "touch": [["밀기 ↔ ↕", "옆 조각과 바꾸기"], ["탭 + 탭", "두 조각 바꾸기"], ["4개", "줄폭탄"], ["ㄱ자", "폭탄"], ["5개", "무지개"], ["시계", "+5초 (STAGE: +3번)"]]},start)});$("modeBack").onclick=()=>{$("modeOv").hidden=true};const gmSet=g=>{GM=g;store.set("swp-gm",g);document.querySelectorAll("#gmT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g))};document.querySelectorAll("#gmT .gmb").forEach(b=>b.onclick=()=>gmSet(b.dataset.g));gmSet(GM);$("againB").onclick=start;$("homeB").onclick=home;
+$("startB").onclick=()=>{unlockAudio();$("modeOv").hidden=false};document.querySelectorAll(".ob.md[data-m]").forEach(b=>b.onclick=()=>{MODE=b.dataset.m;PAL={easy:[1,2,3,4,5,6],normal:[1,2,3,4,5,6,7],hard:[1,2,3,4,5,6,7,9],master:[1,2,3,4,5,6,7,9,10]}[MODE];MUL={easy:.5,normal:1,hard:2,master:3}[MODE];MOVES=MODE==="master"?15:20;phTut("swp-tut",{"goal": "같은 모양 3개 이상을 한 줄로 맞추면 이어진 친구들까지 팡!<br>TIME ATTACK은 팡 하면 시간 충전, STAGE는 20번 안에 목표 점수 · 10스테이지까지.<br>헛스왑: 타임어택 -2초 · 스테이지 -점수", "touch": [["밀기 ↔ ↕", "옆 조각과 바꾸기"], ["4개", "줄폭탄"], ["5개", "폭탄"], ["6개 이상", "무지개"], ["콤보 2·3·4", "줄폭탄·폭탄·무지개"], ["10줄마다", "폭탄 (타임어택: 시계 +5초)"]]},start)});$("modeBack").onclick=()=>{$("modeOv").hidden=true};const gmSet=g=>{GM=g;store.set("swp-gm",g);document.querySelectorAll("#gmT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g))};document.querySelectorAll("#gmT .gmb").forEach(b=>b.onclick=()=>gmSet(b.dataset.g));gmSet(GM);$("againB").onclick=start;$("homeB").onclick=home;
 const rkTab=g=>{RKGM=g;rkCache=null;document.querySelectorAll("#rkT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g));rk($("rkL2"))};document.querySelectorAll("#rkT .gmb").forEach(b=>b.onclick=()=>rkTab(b.dataset.g));
 $("rankB").onclick=()=>{rkTab(GM);$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
 $("bgmB").onclick=()=>{bgmOn=!bgmOn;store.set("swp-bgm",bgmOn?"1":"0");bgmBtn();if(bgmOn&&state==="play")bgmPlay();else bgmStop()};bgmBtn();
