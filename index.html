@@ -118,7 +118,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792838000";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792846000";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -252,12 +252,17 @@ function oldPlan(pref){const R=runs(T),set=new Set(),cnt={},sp=[];
   return {set,sp}}
 function colorAll(c,set){for(let y=0;y<NR;y++)for(let x=0;x<NC;x++)if(T[y][x]&&T[y][x].c===c)set.add(x+","+y)}
 function expand(set,fx){const q=[...set];
+  /* 규칙: 어떤 이유로 터지든(맞추기·줄폭탄·폭탄·무지개) 터지는 팡팡이와 이어진 같은 색은 모두 함께 터짐 → 그 안에 아이템이 있으면 또 터짐 (더 번질 게 없을 때까지) */
+  const flood=()=>{let grew=false;const st=[...set];while(st.length){const k=st.pop(),[x,y]=k.split(",").map(Number),t=T[y]&&T[y][x];if(!okc(t))continue;
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const u=x+dx,v=y+dy;if(u<0||v<0||u>=NC||v>=NR)continue;const o=T[v][u],kk=u+","+v;if(!set.has(kk)&&okc(o)&&o.c===t.c){set.add(kk);st.push(kk);q.push(kk);grew=true}}}return grew};
+  for(;;){
   const add=(x,y)=>{if(x<0||y<0||x>=NC||y>=NR||!T[y][x])return;const k=x+","+y;if(!set.has(k)){set.add(k);q.push(k)}};
   while(q.length){const k=q.pop(),[x,y]=k.split(",").map(Number),t=T[y][x];if(!t||!t.sp||t.fired)continue;t.fired=1;
     if(t.sp==="h"){for(let i=0;i<NC;i++)add(i,y);fx.push({k:"h",x,y})}
     else if(t.sp==="v"){for(let i=0;i<NR;i++)add(x,i);fx.push({k:"v",x,y})}
     else if(t.sp==="b"){for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)add(x+dx,y+dy);fx.push({k:"b",x,y})}
     else if(t.sp==="r"){const cs=T.flat().filter(okc).map(o=>o.c);const c=cs[Math.random()*cs.length|0];if(c){const s2=new Set();colorAll(c,s2);s2.forEach(kk=>{const [a,b]=kk.split(",").map(Number);add(a,b)});fx.push({k:"r",x,y,c})}}}
+  if(!flood())break}
   return set}
 function findMove(){for(let y=0;y<NR;y++)for(let x=0;x<NC;x++)for(const [dx,dy] of [[1,0],[0,1]]){const X=x+dx,Y=y+dy;if(X>=NC||Y>=NR)continue;
   const a=T[y][x],b=T[Y][X];if(a.rk||b.rk)continue;if(a.c===8||b.c===8||(a.sp&&b.sp))return [[x,y],[X,Y]];T[y][x]=b;T[Y][X]=a;const ok=runsAt(T).size>0;T[y][x]=a;T[Y][X]=b;if(ok)return [[x,y],[X,Y]]}return null}
