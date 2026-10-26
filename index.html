@@ -118,7 +118,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1792846000";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1793001824";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -159,7 +159,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
       <div class="rk"><h4>RANKING</h4><ol id="rkL"></ol></div>
       <div class="row"><button class="ob" id="againB">ONE MORE</button><button class="ob" id="homeB">HOME</button></div>
     </div>
-    <div class="ov" id="rankOv" hidden><div class="gmT" id="rkT"><button class="gmb" data-g="time">TIME ATTACK</button><button class="gmb" data-g="stage">STAGE</button></div><div class="rk"><h4>RANKING</h4><ol id="rkL2"></ol></div><button class="ob" id="rankClose">CLOSE</button></div>
+    <div class="ov" id="rankOv" hidden><div class="gmT" id="rkT"><button class="gmb" data-g="time">TIME ATTACK</button><button class="gmb" data-g="stage">STAGE</button></div><div id="rkBar"></div><div class="rk"><h4>RANKING</h4><ol id="rkL2"></ol></div><button class="ob" id="rankClose">CLOSE</button></div>
   </div>
 </div>
 <script>
@@ -465,7 +465,7 @@ function start(){if(goUpd())return;["startOv","modeOv","overOv","pauseOv","rankO
 function pause(on){if(!T||state==="over")return;if(on&&window.PHVS&&PHVS.active)return; /* 대전 중엔 일시정지 없음 */state=on?"pause":"play";$("pauseOv").hidden=!on;lastT=0;on?bgmStop():bgmPlay();tbar()}
 function gameOver(){if(state==="over")return;if(window.PHVS&&PHVS.active){state="over";bgmStop();phase="over";tbar();showChain("TIME UP","");PHVS.over(score,false);return}state="over";chkUpd();rkSync();bgmStop();tbar();phase="over";const best=+(store.get("swp-best")||0);if(score>best)store.set("swp-best",score);
   $("oS").textContent=score.toLocaleString();$("oC").textContent=maxCombo;$("oL").textContent=stage;
-  $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);$("nmF").classList.remove("done");$("nmF").querySelector("button").textContent="랭킹 등록";mine=null;myRec=null;RKGM=GM;rkCache=null;rk($("rkL"));showChain(ALLC?"ALL CLEAR!":GM==="stage"?"NO MORE MOVES":"TIME UP",ALLC?"10 STAGES":"");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
+  $("nmI").value=store.get("pang-name")||"";$("nmF").classList.toggle("saved",score<=0);$("nmF").classList.remove("done");$("nmF").querySelector("button").textContent="랭킹 등록";mine=null;myRec=null;RKGM=GM;rkCache=null;RSEL={diff:MODE,ver:window.phRk?phRk.vers("switchpang")[0].id:null};rk($("rkL"));showChain(ALLC?"ALL CLEAR!":GM==="stage"?"NO MORE MOVES":"TIME UP",ALLC?"10 STAGES":"");setTimeout(()=>{$("overOv").hidden=false},900);hud()}
 function home(){if(goUpd())return;state=null;bgmStop();fill();stage=1;beams=[];parts=[];rings=[];floats=[];["modeOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);$("startOv").hidden=false;score=0;maxCombo=0;timeLeft=60;hud();draw()}
 function toast(m){let e=document.getElementById("toast");if(!e){e=document.createElement("div");e.id="toast";e.className="toast";document.body.appendChild(e)}e.textContent=m;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1800)}
 const RK="swp-rank";let mine=null;
@@ -474,7 +474,11 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const RANK_URL="https://script.google.com/macros/s/AKfycbzkdjVleobj98oyxlC77cUf5txCRiSB6D1zgRWU56pX22ElXAx9R8xFRGnV0nKAUbwC/exec";let rkCache=null,myRec=null;
 function rkDraw(el,l){l=l.slice(0,20);let hit=false;el.innerHTML=l.length?l.map((r,i)=>{const me=!hit&&myRec&&r.n===myRec.n&&r.s===myRec.s;if(me)hit=true;return `<li class="${me?"me":""}"><em>${i+1}</em>${esc(r.n)}${window.phLv?phLv(({easy:"EASY",normal:"NORMAL",hard:"HARD",master:"MASTER","이지":"EASY","노멀":"NORMAL","하드":"HARD","마스터":"MASTER"}[String(r.m||"").replace("스테이지 ","")]||"")):""}<small>STAGE ${r.g||r.v||1}</small><b>${Number(r.s).toLocaleString()}</b></li>`}).join(""):`<li class="empty">아직 기록이 없어요</li>`}
 /* 서버 랭킹 + 이 폰 기록을 합쳐서 보여줌 (서버 응답이 늦거나 실패해도 마지막으로 받은 서버 랭킹 유지) */
-function rkMerge(srv){const m=new Map();[...(srv||[]),...rkLoad().filter(r=>(r.gm||"time")===RKGM)].forEach(r=>{const k=r.n+"|"+r.s+"|"+(r.g||r.v||1);if(!m.has(k))m.set(k,r)});return [...m.values()].sort((a,b)=>b.s-a.s)}
+/* 랭킹: 모드(TIME·STAGE) × 난이도 × 버전 (게임:모드:난이도:버전) */
+const DIFFN={easy:"easy",normal:"normal",hard:"hard",master:"master","이지":"easy","노멀":"normal","하드":"hard","마스터":"master"};let RSEL={};
+const rkOk=r=>!window.phRk||!RSEL.ver||((DIFFN[String(r.m||"").replace("스테이지 ","")]||"normal")===RSEL.diff&&phRk.ver("switchpang",r)===RSEL.ver);
+function rkBarInit(sel){if(window.phRk)RSEL=phRk.bar($("rkBar"),{game:"switchpang",diffs:[["easy","EASY"],["normal","NORMAL"],["hard","HARD"],["master","MASTER"]],sel,onChange:x=>{RSEL=x;rkDraw($("rkL2"),rkMerge(rkCache))}})}
+function rkMerge(srv){const m=new Map();[...(srv||[]),...rkLoad().filter(r=>(r.gm||"time")===RKGM)].forEach(r=>{const k=r.n+"|"+r.s+"|"+(r.g||r.v||1);if(!m.has(k))m.set(k,r)});return [...m.values()].filter(rkOk).sort((a,b)=>b.s-a.s)}
 function rkSaved(){try{return JSON.parse(store.get("swp-srv"+(RKGM==="stage"?"-st":""))||"null")}catch(e){return null}}
 async function rkFetch(){const g=RKGM;for(let i=0;i<3;i++){try{const j=await fetch(RANK_URL+"?g=switchpang&gm="+g+"&_="+Date.now(),{cache:"no-store"}).then(r=>r.json());if(j&&Array.isArray(j.top)){store.set("swp-srv"+(g==="stage"?"-st":""),JSON.stringify(j.top));if(g!==RKGM)return false;rkCache=j.top;return true}}catch(e){}await new Promise(r=>setTimeout(r,1200*(i+1)))}return false}
 function rk(el){if(!rkCache)rkCache=rkSaved();rkDraw(el,rkMerge(rkCache));rkFetch().then(ok=>{if(ok)rkDraw(el,rkMerge(rkCache))})}
@@ -492,7 +496,7 @@ function chkUpd(){fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).t
 function goUpd(){if(!needUpd)return false;location.replace(location.pathname+"?v="+needUpd);return true}
 addEventListener("visibilitychange",()=>{if(!document.hidden&&state!=="play"){rkSync();chkUpd()}});
 $("nmF").addEventListener("submit",e=>{e.preventDefault();if(mine||score<=0)return;const n=($("nmI").value.trim()||"익명").slice(0,8);store.set("pang-name",n);
-  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,m:MODE,gm:GM,d:new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved","done");$("nmF").querySelector("button").textContent="등록 완료 ✓";toast("랭킹에 등록되었어요!");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
+  const r={id:Date.now()+"",n,s:score,c:maxCombo,p:pops,g:stage,m:MODE,gm:GM,ts:Date.now(),d:window.phRk?phRk.now():new Date().toISOString().slice(0,10)};const a=rkLoad();a.push(r);a.sort((x,y)=>y.s-x.s);store.set(RK,JSON.stringify(a.slice(0,50)));mine=r.id;myRec=r;$("nmF").classList.add("saved","done");$("nmF").querySelector("button").textContent="등록 완료 ✓";toast("랭킹에 등록되었어요!");$("nmI").blur();rkDraw($("rkL"),rkMerge(rkCache));rkSync().then(()=>rk($("rkL")))});
 PHVS.init({id:'swp',name:()=>store.get("pang-name")||"",setName:n=>store.set("pang-name",n),score:()=>score,
  start:()=>{vsAcc=0;MODE="normal";PAL=[1,2,3,4,5,6,7];MUL=1;MOVES=20;GM="time";["startOv","modeOv","overOv","pauseOv","rankOv"].forEach(i=>$(i).hidden=true);start();showChain("VS START!","콤보로 상대 시간 깎기")},
  data:d=>{if(d.t==="ice"&&state==="play"){const cand=T.flat().filter(t=>t&&!t.rk&&!t.sp&&t.c!==8&&!t.ck);for(let i=0;i<d.n&&cand.length;i++){const t=cand.splice(Math.random()*cand.length|0,1)[0];t.rk=true;t.lt=NOW}const cut=Math.min(5,d.n);timeLeft=Math.max(0,timeLeft-cut);tbar();showChain("ATTACKED!",d.n+"칸 얼음 · -"+cut+" SEC");shake=12;shakeA=1;flashA=.5}}, /* 대전: 얼음 + 시간 깎기 */
@@ -500,7 +504,7 @@ PHVS.init({id:'swp',name:()=>store.get("pang-name")||"",setName:n=>store.set("pa
 $("vsB").onclick=()=>{unlockAudio();PHVS.menu()};
 $("startB").onclick=()=>{unlockAudio();$("modeOv").hidden=false};document.querySelectorAll(".ob.md[data-m]").forEach(b=>b.onclick=()=>{MODE=b.dataset.m;PAL={easy:[1,2,3,4,5,6],normal:[1,2,3,4,5,6,7],hard:[1,2,3,4,5,6,7,9],master:[1,2,3,4,5,6,7,9,10]}[MODE];MUL={easy:.5,normal:1,hard:2,master:3}[MODE];MOVES=MODE==="master"?15:20;phTut("swp-tut",{"goal": "같은 모양 3개 이상을 한 줄로 맞추면 이어진 친구들까지 팡!<br>TIME ATTACK은 팡 하면 시간 충전, STAGE는 20번 안에 목표 점수 · 10스테이지까지.<br>헛스왑: 타임어택 -2초 · 스테이지 -점수", "touch": [["밀기 ↔ ↕", "옆 조각과 바꾸기"], ["4개", "줄폭탄"], ["5개", "폭탄"], ["6개 이상", "무지개"], ["콤보 2·3·4", "줄폭탄·폭탄·무지개"], ["10줄마다", "폭탄 (타임어택: 시계 +5초)"]]},start)});$("modeBack").onclick=()=>{$("modeOv").hidden=true};const gmSet=g=>{GM=g;store.set("swp-gm",g);document.querySelectorAll("#gmT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g))};document.querySelectorAll("#gmT .gmb").forEach(b=>b.onclick=()=>gmSet(b.dataset.g));gmSet(GM);$("againB").onclick=start;$("homeB").onclick=home;
 const rkTab=g=>{RKGM=g;rkCache=null;document.querySelectorAll("#rkT .gmb").forEach(b=>b.classList.toggle("on",b.dataset.g===g));rk($("rkL2"))};document.querySelectorAll("#rkT .gmb").forEach(b=>b.onclick=()=>rkTab(b.dataset.g));
-$("rankB").onclick=()=>{rkTab(GM);$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
+$("rankB").onclick=()=>{rkBarInit(null);rkTab(GM);$("rankOv").hidden=false};$("rankClose").onclick=()=>$("rankOv").hidden=true;
 $("bgmB").onclick=()=>{bgmOn=!bgmOn;store.set("swp-bgm",bgmOn?"1":"0");bgmBtn();if(bgmOn&&state==="play")bgmPlay();else bgmStop()};bgmBtn();
 $("sfxB").onclick=()=>{sfxOn=!sfxOn;store.set("swp-sfx",sfxOn?"1":"0");bgmBtn();unlockAudio();if(sfxOn)tone("sine",660,880,.1,.03)};
 addEventListener("visibilitychange",()=>{if(document.hidden)bgmStop();else if(state==="play")bgmPlay()});
@@ -511,5 +515,5 @@ addEventListener("resize",layout);
 fill();hud();layout();requestAnimationFrame(tick);setTimeout(layout,300);
 </script>
 
-<script src="../games/ph.js?v=13"></script></body>
+<script src="../games/ph.js?v=14"></script></body>
 </html>
