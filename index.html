@@ -532,7 +532,7 @@ $("rankB").onclick=()=>{rkTab(GM);$("rankOv").hidden=false};$("rankClose").oncli
 /* 설정 창: 톱니 버튼 → 게임 잠깐 멈춤 · 닫으면 이어서 (대전 중엔 멈추지 않음) */
 const vsOn=()=>!!(window.PHVS&&PHVS.active);
 function v2init(){FX=PP.get("fx",true)!==false;GUIDE=PP.get("guide",true)!==false;
-  gmSet(PP.get("gm","time")==="stage"?"stage":"time");lvMark(PP.get("lv","normal")); /* 마지막으로 고른 방식·난이도 미리 선택 */
+  gmSet("stage");lvMark("normal"); /* 들어올 때마다 기본 STAGE + NORMAL */
   sfxWas=AUD.sfxOn();AUD.on(()=>{sndApply();const on=AUD.sfxOn();if(on&&!sfxWas){unlockAudio();tone("sine",660,880,.1,.03)}sfxWas=on});
   if(window.phSettings)phSettings.config({
     guide:{label:"힌트 반짝임",get:()=>GUIDE,set:v=>{GUIDE=!!v;PP.set("guide",GUIDE);if(!GUIDE)hint=null}},
