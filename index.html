@@ -116,7 +116,7 @@ background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1.5px),ra
 #bgmB.off .pix,#sfxB.off .pix{opacity:.3}
 .bw{align-items:center!important}
 </style>
-<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1793554601";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
+<script>/* 옛 버전 캐시 자동 갱신 */(function(){var V="1793555690";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var V="(\d+)"/);if(m&&m[1]!==V&&!/[?&]v=/.test(location.search+"")){location.replace(location.pathname+"?v="+m[1])}else if(m&&m[1]!==V&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1])}if(!(m&&m[1]!==V)&&window.__phDone)__phDone()}).catch(function(){window.__phDone&&__phDone()})}catch(e){window.__phDone&&__phDone()}})();</script>
 <meta http-equiv="Cache-Control" content="no-cache">
 <script>/* 카톡 등 인앱 브라우저: 실제 보이는 높이로 화면 맞춤 */(function(){var d=document.documentElement;function f(){var h=window.innerHeight,v=window.visualViewport;if(v&&v.height>0)h=Math.min(h,Math.round(v.height));d.style.setProperty('--app-h',h+'px');if(typeof layout==='function')requestAnimationFrame(function(){layout()})}f();addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(f);addEventListener('orientationchange',function(){setTimeout(f,300)});addEventListener('pageshow',f);setTimeout(f,250);setTimeout(f,1000)})();</script>
 <style>html,body{height:var(--app-h,100%)!important}@media (max-width:519px){.ph{bottom:auto!important;height:var(--app-h,100%)!important}}</style>
@@ -298,12 +298,12 @@ function swapResult(){const [ax,ay]=swapA,[bx,by]=swapB,A=T[ay][ax],B=T[by][bx];
   if(A.sp&&B.sp){const set=new Set([ax+","+ay,bx+","+by]),fx=[];expand(set,fx);return {set,sp:[],fx}}
   const P=plan([swapA,swapB]);if(!P)return null;P.fx=[];expand(P.set,P.fx);return P}
 function startClear(P){const m=P.set;
-  for(const q of P.sp){const k=q.x+","+q.y,t=T[q.y][q.x];if(!t)continue;m.delete(k);t.sp=q.sp;if(q.sp==="r")t.c=8;t.ck=false;t.lt=NOW+200;t.fired=0}
-  clearSet=m;clearSet.fx=P.fx||[];clearSet.sp=P.sp;phase="clear";phT=0;combo++;if(combo>maxCombo)maxCombo=combo;
+  const IT=new Map();for(const q of P.sp){const k=q.x+","+q.y,t=T[q.y][q.x];if(!t)continue;m.delete(k);IT.set(k,q.sp)} /* 2026-11-02: 아이템은 터짐이 끝난 뒤 그 자리에 등장 (먼저 아이템으로 바뀌어 안 터진 것처럼 보이던 문제) */
+  clearSet=m;clearSet.it=IT;clearSet.fx=P.fx||[];clearSet.sp=P.sp;phase="clear";phT=0;combo++;if(combo>maxCombo)maxCombo=combo;
   {/* 아이템 규칙: 콤보 2 줄폭탄 · 콤보 3 폭탄 · 콤보 4+ 무지개 / 한 스테이지에서 10줄마다 폭탄 (타임어택은 시계) */
    const bon=[];if(combo===2)bon.push(Math.random()<.5?"h":"v");else if(combo===3)bon.push("b");else if(combo>=4)bon.push("r");
    stLines+=P.runs||0;while(stLines>=10){stLines-=10;bon.push(GM==="stage"?"b":"ck")}
-   const cand=[];if(bon.length)for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){const t=T[y][x];if(okc(t)&&!t.sp&&!t.ck&&!m.has(x+","+y)&&!P.sp.some(q=>q.x===x&&q.y===y))cand.push([t,x,y])}
+   const cand=[];if(bon.length)for(let y=0;y<NR;y++)for(let x=0;x<NC;x++){const t=T[y][x];if(okc(t)&&!t.sp&&!t.ck&&!m.has(x+","+y)&&!IT.has(x+","+y)&&!P.sp.some(q=>q.x===x&&q.y===y))cand.push([t,x,y])}
    for(const k of bon){if(!cand.length)break;const [t,cx0,cy0]=cand.splice(Math.random()*cand.length|0,1)[0];if(k==="ck")t.ck=true;else{t.sp=k;t.fired=0;if(k==="r")t.c=8}t.lt=NOW+200;floats.push({x:(cx0+.5)*CS,y:(cy0+.5)*CS,t:0,life:1.1,txt:k==="ck"?"+TIME":k==="r"?"RAINBOW":k==="b"?"BOMB":"LINE",big:true})}}if(window.PHVS&&PHVS.active){vsAcc+=m.size*combo;const k=Math.floor(vsAcc/6);if(k>0){vsAcc-=k*6;PHVS.send({t:"ice",n:Math.min(8,k)});floats.push({x:CS*NC/2,y:CS*.8,t:0,life:1.1,txt:"ATTACK ▶ "+Math.min(8,k),big:true})}} /* 대전: 터뜨린 만큼(6개당 1칸, 콤보면 더 많이) 상대 팡팡이를 얼림 */
   const cells=[...m].map(k=>k.split(",").map(Number));const n=cells.length;let clocks=0;for(const [x,y] of cells)if(T[y][x]&&T[y][x].ck)clocks++;
   const mult=combo*(n>=5?2:n>=4?1.5:1);const gain=Math.round(10*n*mult*MUL);score+=gain;pops+=n;
@@ -318,7 +318,7 @@ function startClear(P){const m=P.set;
   else if(P.sp&&P.sp.length)showChain(P.sp.some(q=>q.sp==="r")?"AMAZING!":"GREAT!",P.sp.some(q=>q.sp==="r")?"RAINBOW GET":P.sp.some(q=>q.sp==="b")?"BOMB GET":"LINE GET");
   let sx=0,sy=0;for(const [x,y] of cells){sx+=x;sy+=y}if(n)floats.push({x:(sx/n+.5)*CS,y:(sy/n+.5)*CS,t:0,life:1,txt:"+"+gain.toLocaleString(),big:combo>=2});hud()}
 function burst(){const k=CS/50,mul=Math.min(2.8,1.5+(combo-1)*.45);const byC={};
-  for(const key of clearSet){const [x,y]=key.split(",").map(Number),t=T[y][x];if(!t)continue;const px=(x+.5)*CS,py=(y+.5)*CS,cc=t.c===8?rc():t.c;(byC[cc]=byC[cc]||[]).push([px,py]);
+  for(const key of [...clearSet,...(clearSet.it?clearSet.it.keys():[])]){const [x,y]=key.split(",").map(Number),t=T[y][x];if(!t)continue;const px=(x+.5)*CS,py=(y+.5)*CS,cc=t.c===8?rc():t.c;(byC[cc]=byC[cc]||[]).push([px,py]);
     const many=clearSet.size>12?.5:1;
     if(FX)for(let i=0;i<Math.round(8*mul*many);i++){const an=Math.random()*6.283,sp=(140+Math.random()*220)*k*(.85+mul*.25);parts.push({x:px,y:py,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp-90*k,g:620*k,life:.55+Math.random()*.4,t:0,s:(5+Math.random()*6)*k,col:COL[cc][i%3===0?1:0],star:i%3===0,rot:Math.random()*6,vr:(Math.random()-.5)*12})}
     if(FX)for(let i=0;i<3;i++){const an=Math.random()*6.283,sp=(60+Math.random()*120)*k;parts.push({x:px,y:py,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,g:0,life:.35+Math.random()*.25,t:0,s:3*k,col:"#fff",star:false,rot:0,vr:0})}
@@ -330,6 +330,7 @@ function burst(){const k=CS/50,mul=Math.min(2.8,1.5+(combo-1)*.45);const byC={};
     else if(e.k==="r"){for(let i=0;i<4;i++)rings.push({x:px,y:py,t:-i*.07,life:.7,col:["#ff4d6d","#ffd23f","#5bd16b","#3fa7ff"][i],r0:CS*.4,r1:CS*(4+i)});fxs=3}}
   if(FX){shake=Math.min(20,5+combo*3+fxs*4);shakeA=1;flashA=Math.min(.6,.12+combo*.08+fxs*.1)}sfx(combo);if(fxs)boom(fxs)}
 function collapse(){for(const key of clearSet){const [x,y]=key.split(",").map(Number);T[y][x]=null}
+  if(clearSet.it)for(const [key,sp] of clearSet.it){const [x,y]=key.split(",").map(Number),t=T[y][x];if(!t)continue;t.sp=sp;if(sp==="r")t.c=8;t.ck=false;t.fired=0;t.lt=NOW;floats.push({x:(x+.5)*CS,y:(y+.5)*CS,t:0,life:1,txt:sp==="r"?"RAINBOW":sp==="b"?"BOMB":"LINE",big:true})}
   for(const key of clearSet){const [x,y]=key.split(",").map(Number);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const u=x+dx,v=y+dy,t=T[v]&&T[v][u];if(t&&t.rk){t.rk=false;t.lt=NOW}}} /* 옆에서 터지면 얼음이 녹음 */
   let clocks=T.flat().filter(t=>t&&t.ck).length,itm=0;
   for(let x=0;x<NC;x++){let w=NR-1;for(let y=NR-1;y>=0;y--)if(T[y][x]){if(w!==y){T[w][x]=T[y][x];T[y][x]=null}w--}
@@ -354,7 +355,7 @@ function tick(t){requestAnimationFrame(tick);const dt=Math.min(50,t-(lastT||t));
     tbar();
     phT+=dt;
     if(phase==="swap"&&phT>=170){if(swapBack){phase=ending?"fall":"idle";if(ending)after()}else{const P=swapResult();if(P){if(GM==="stage")moves--;startClear(P)}else{const [ax,ay]=swapA,[bx,by]=swapB;const tt=T[ay][ax];T[ay][ax]=T[by][bx];T[by][bx]=tt;swapBack=true;phT=0;bump();/* 헛스왑 벌칙: 타임어택 -2초 · 스테이지 -점수 */const pen=GM==="stage"?Math.round(30*MUL):2;if(GM==="stage"){score=Math.max(0,score-pen);stS=Math.max(0,stS-pen)}else timeLeft=Math.max(0,timeLeft-pen);floats.push({x:((ax+bx)/2+.5)*CS,y:((ay+by)/2+.5)*CS,t:0,life:1,txt:GM==="stage"?"-"+pen:"-"+pen+" SEC",big:false});hud()}}}
-    else if(phase==="clear"){if(phT>=220&&!clearSet.burst){clearSet.burst=true;burst()}if(phT>=470)collapse()}
+    else if(phase==="clear"){if(phT>=280&&!clearSet.burst){clearSet.burst=true;burst()}if(phT>=530)collapse()}
     else if(phase==="fall"){landN=0;if(!settle(dt))after();else if(landN&&Math.random()<.5)plop()}
     else if(phase==="idle"){if(ending){gameOver();}idleT+=dt;if(GUIDE&&idleT>5000&&!hint)hint=findMove()}
   }
@@ -438,7 +439,7 @@ function draw(){const c=cx,tm=NOW||performance.now(),w=CS*NC;c.setTransform(DPR,
     if(phase==="swap"){const [ax,ay]=swapA,[bx,by]=swapB;if(x===ax&&y===ay){px=bx+(ax-bx)*se;py=by+(ay-by)*se}else if(x===bx&&y===by){px=ax+(bx-ax)*se;py=ay+(by-ay)*se}}
     if(py<-1)continue;
     const key=x+","+y;
-    if(clearSet&&clearSet.has(key)){const T2=phT;if(T2<220){const p=T2/220,j=(Math.random()-.5)*CS*.08*p,sc=1+.28*Math.sin(p*Math.PI/2);sprite(t.c,"x",px*CS+j,py*CS+j,CS,sc,sc,1,.15+.55*p)}
+    const isIt=clearSet&&clearSet.it&&clearSet.it.has(key);if(clearSet&&(clearSet.has(key)||isIt)){const T2=phT-60; /* 바뀐 자리를 먼저 또렷이 보여 준 뒤 터짐 */if(T2<0){sprite(t.c,"",px*CS,py*CS,CS,1,1);continue}if(T2<220){const p=T2/220,j=(Math.random()-.5)*CS*.08*p,sc=1+.28*Math.sin(p*Math.PI/2);sprite(t.c,"x",px*CS+j,py*CS+j,CS,sc,sc,1,.15+.55*p)}
       else{const p=Math.min(1,(T2-220)/250),sc=1.28*(1-p);if(sc>.05)sprite(t.c,"x",px*CS,py*CS,CS,sc,sc,1-p*.6,.7)}continue}
     const lt=(tm-t.lt)/1000;let wv=Math.sin(tm/1000*2.3+t.ph)*.03,sx=1+wv,sy=1-wv;
     if(lt>=0&&lt<.6){const k=Math.exp(-lt*7)*Math.cos(lt*26);sx+=.18*k;sy-=.2*k}
